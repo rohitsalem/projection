@@ -33,7 +33,7 @@ namespace gazebo
 	public: std::mutex mutex;
 
 	/// \brief Gazebo subscriber to world info
-	public: transport::SubscriberPtr infosub; 
+	public: transport::SubscriberPtr infosub;
 
 	/// \brief True to use Wall time, false to use sim time
     public: bool useWallTime;
@@ -49,7 +49,7 @@ VisualBboxPlugin::VisualBboxPlugin() : dataPtr(new VisualBboxPluginPrivate)
 {
 }
 
-VisualBboxPlugin::~VisualBboxPlugin() 
+VisualBboxPlugin::~VisualBboxPlugin()
 {
 	this->dataPtr->infosub.reset();
 	if(this->dataPtr->node)
@@ -97,6 +97,7 @@ void VisualBboxPlugin::Update()
 	}
 	// auto box = this->dataPtr->visual->BoundingBox();
 	this->dataPtr->visual->GetHighlighted();
+	this->dataPtr->visual->ShowBoundingBox();
 }
 
 
