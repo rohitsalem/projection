@@ -61,7 +61,7 @@
       </link>
     </model>
     <model name='camera'>
-      <pose frame=''>-1.4903 0.025726 0.05 0 -0 0</pose>
+      <pose frame=''>-1.4903 0.025726 2.22266 0 0.15 0.1</pose>
       <link name='link'>
         <inertial>
           <mass>0.1</mass>
@@ -236,10 +236,10 @@
       <wall_time>1504895901 971190867</wall_time>
       <iterations>97672</iterations>
       <model name='camera'>
-        <pose frame=''>-1.4903 0.025726 1.22266 0 -0 0</pose>
+        <pose frame=''>-1.4903 0.025726 2.22266 0 0.15 0.1</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>-1.4903 0.025726 1.22266 0 -0 0</pose>
+          <pose frame=''>-1.4903 0.025726 2.22266 0 0.15 0.1</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
@@ -256,10 +256,10 @@
         </link>
       </model>
       <model name='person_walking'>
-        <pose frame=''>4.7125 1.23665 -1e-06 2e-06 2e-06 -0.811505</pose>
+        <pose frame=''>4.706141 1.250742 0.148441 -0.028269 -0.099866 -0.87054</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>4.7125 1.23665 -1e-06 2e-06 2e-06 -0.811505</pose>
+          <pose frame=''>4.706141 1.250742 0.148441 -0.028269 -0.099866 -0.87054</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>-0.850179 -2.18494 -2.45418 2.34592 -0.62251 -0.064435</acceleration>
           <wrench>-68.0143 -174.795 -196.334 0 -0 0</wrench>
