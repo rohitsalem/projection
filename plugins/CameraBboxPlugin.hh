@@ -26,14 +26,13 @@
 #include "gazebo/rendering/Scene.hh"
 namespace gazebo
 {
-  class CameraBboxPluginPrivate: public Scene::Scene;
+  class CameraBboxPluginPrivate;
   class GAZEBO_VISIBLE CameraBboxPlugin : public SensorPlugin
   {
     public: CameraBboxPlugin();
 
     /// \brief Destructor
     public: virtual ~CameraBboxPlugin();
-    public: void Init();
     public: virtual void Load(sensors::SensorPtr _sensor, sdf::ElementPtr _sdf);
 
     public: virtual void OnNewFrame(const unsigned char *_image,
@@ -45,9 +44,9 @@ namespace gazebo
 
     protected: sensors::CameraSensorPtr parentSensor;
     protected: rendering::CameraPtr camera;
-  public: void pixel();
+
     private: event::ConnectionPtr newFrameConnection;
-    private: std::unique_ptr<CameraBboxPluginPrivate> dataPtr;
+    // private: std::unique_ptr<CameraBboxPluginPrivate> dataPtr;
   };
 }
 #endif

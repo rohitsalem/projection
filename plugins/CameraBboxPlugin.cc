@@ -33,18 +33,6 @@ CameraBboxPlugin::CameraBboxPlugin()
 {
 }
 
-// void CameraBboxPlugin::Init()
-// {
-//   ignition::math::Vector3d pttest;
-//   pttest.Set(4.5,0,0);
-//   this->width = this->camera->ImageWidth();
-//   this->height = this->camera->ImageHeight();
-//   this->depth = this->camera->ImageDepth();
-//   this->format = this->camera->ImageFormat();
-//   auto pixeltest = this->camera->Project(pttest);
-//   std::cout << pixeltest << '\n' << this->camera->WorldPose() << std::endl;
-//
-// }
 /////////////////////////////////////////////////
 CameraBboxPlugin::~CameraBboxPlugin()
 {
@@ -97,7 +85,7 @@ void CameraBboxPlugin::Load(sensors::SensorPtr _sensor, sdf::ElementPtr /*_sdf*/
   this->height = this->camera->ImageHeight();
   this->depth = this->camera->ImageDepth();
   this->format = this->camera->ImageFormat();
-  this->dataPtr->connections.push_back(event::Events::ConnectPreRender(std::bind(&CameraBboxPlugin::pixel, this)));
+  // this->dataPtr->connections.push_back(event::Events::ConnectPreRender(std::bind(&CameraBboxPlugin::pixel, this)));
 
   // auto pixelsA = this->camera->Project(ptA);
   // auto pixelsB = this->camera->Project(ptB);
@@ -110,7 +98,7 @@ void CameraBboxPlugin::Load(sensors::SensorPtr _sensor, sdf::ElementPtr /*_sdf*/
   auto pixelsI = this->camera->Project(ptI);
   // std::cout << "pixels" << pixelsA << '\n' << pixelsB << "\n" << pixelsC << "\n" << pixelsD << "\n";
   // std::cout << "pixels" << pixelsE << '\n' << pixelsF << "\n" << pixelsG << "\n" << pixelsH << "\n";
-std::cout << pixelsI << '\n' << this->camera->WorldPose() << std::endl;
+  std::cout << pixelsI << '\n' << this->camera->WorldPose() << std::endl;
   this->newFrameConnection = this->camera->ConnectNewImageFrame(
       std::bind(&CameraBboxPlugin::OnNewFrame, this,
         std::placeholders::_1, std::placeholders::_2, std::placeholders::_3,
@@ -119,18 +107,6 @@ std::cout << pixelsI << '\n' << this->camera->WorldPose() << std::endl;
   this->parentSensor->SetActive(true);
 }
 
-void CameraBboxPlugin::pixel()
-{
-  ignition::math::Vector3d pttest;
-  pttest.Set(4.5,0,0);
-  this->width = this->camera->ImageWidth();
-  this->height = this->camera->ImageHeight();
-  this->depth = this->camera->ImageDepth();
-  this->format = this->camera->ImageFormat();
-  auto pixeltest = this->camera->Project(pttest);
-  std::cout << pixeltest << '\n' << this->camera->WorldPose() << std::endl;
-
-}
 /////////////////////////////////////////////////
 void CameraBboxPlugin::OnNewFrame(const unsigned char * /*_image*/,
                               unsigned int /*_width*/,

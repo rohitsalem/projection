@@ -99,7 +99,7 @@ void VisualBboxPlugin::Update()
 	// this->dataPtr->visual->GetHighlighted();
 	this->dataPtr->visual->ShowBoundingBox();
 	auto bbox =  this->dataPtr->visual->BoundingBox();
-	std::cout << "/* message */" << bbox <<'\n';
+	// std::cout << "/* message */" << bbox <<'\n';
 }
 
 

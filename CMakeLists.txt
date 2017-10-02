@@ -127,6 +127,8 @@ link_directories(${GAZEBO_LIBRARY_DIRS})
 add_library(VisualBboxPlugin SHARED plugins/VisualBboxPlugin.cc)
 target_link_libraries( VisualBboxPlugin ${GAZEBO_LIBRARIES})
 
+add_library(CameraBboxPlugin SHARED plugins/CameraBboxPlugin.cc)
+target_link_libraries( CameraBboxPlugin ${GAZEBO_LIBRARIES})
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
