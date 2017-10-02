@@ -24,6 +24,7 @@
 #include "gazebo/rendering/Camera.hh"
 #include "gazebo/util/system.hh"
 #include "gazebo/rendering/Scene.hh"
+#include "gazebo/common/Events.hh"
 namespace gazebo
 {
   class CameraBboxPluginPrivate;
@@ -44,9 +45,10 @@ namespace gazebo
 
     protected: sensors::CameraSensorPtr parentSensor;
     protected: rendering::CameraPtr camera;
-
+    public: void Update();
     private: event::ConnectionPtr newFrameConnection;
-    // private: std::unique_ptr<CameraBboxPluginPrivate> dataPtr;
+    protected: std::vector<event::ConnectionPtr> connections;
+
   };
 }
 #endif

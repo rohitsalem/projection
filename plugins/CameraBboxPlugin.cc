@@ -63,7 +63,7 @@ void CameraBboxPlugin::Load(sensors::SensorPtr _sensor, sdf::ElementPtr /*_sdf*/
     gzerr << "CameraBboxPlugin not attached to a camera sensor\n";
     return;
   }
-  ignition::math::Vector3d ptA, ptB, ptC, ptD, ptE, ptF, ptG , ptH,ptI;
+  // ignition::math::Vector3d ptA, ptB, ptC, ptD, ptE, ptF, ptG , ptH,ptI;
   // ptA.Set(4.775,1.6,0.2);
   // ptB.Set(4.225,1.6,0.2);
   // ptC.Set(4.225,0.8,0.2);
@@ -80,12 +80,11 @@ void CameraBboxPlugin::Load(sensors::SensorPtr _sensor, sdf::ElementPtr /*_sdf*/
   // ptF.Set(4.225,0.4,2.1);
   // ptG.Set(4.225,-0.4,2.1);
   // ptH.Set(4.775,-0.4,2.1);
-  ptI.Set(4.6,0,0);
-  this->width = this->camera->ImageWidth();
-  this->height = this->camera->ImageHeight();
-  this->depth = this->camera->ImageDepth();
-  this->format = this->camera->ImageFormat();
-  // this->dataPtr->connections.push_back(event::Events::ConnectPreRender(std::bind(&CameraBboxPlugin::pixel, this)));
+  // ptI.Set(4.6,0,0);
+  // this->width = this->camera->ImageWidth();
+  // this->height = this->camera->ImageHeight();
+  // this->depth = this->camera->ImageDepth();
+  // this->format = this->camera->ImageFormat();
 
   // auto pixelsA = this->camera->Project(ptA);
   // auto pixelsB = this->camera->Project(ptB);
@@ -95,10 +94,12 @@ void CameraBboxPlugin::Load(sensors::SensorPtr _sensor, sdf::ElementPtr /*_sdf*/
   // auto pixelsF = this->camera->Project(ptF);
   // auto pixelsG = this->camera->Project(ptG);
   // auto pixelsH = this->camera->Project(ptH);
-  auto pixelsI = this->camera->Project(ptI);
+  // auto pixelsI = this->camera->Project(ptI);
   // std::cout << "pixels" << pixelsA << '\n' << pixelsB << "\n" << pixelsC << "\n" << pixelsD << "\n";
   // std::cout << "pixels" << pixelsE << '\n' << pixelsF << "\n" << pixelsG << "\n" << pixelsH << "\n";
-  std::cout << pixelsI << '\n' << this->camera->WorldPose() << std::endl;
+  // std::cout << pixelsI << '\n' << this->camera->WorldPose() << std::endl;
+  this->connections.push_back(
+     event::Events::ConnectPreRender(std::bind(&CameraBboxPlugin::Update, this)));
   this->newFrameConnection = this->camera->ConnectNewImageFrame(
       std::bind(&CameraBboxPlugin::OnNewFrame, this,
         std::placeholders::_1, std::placeholders::_2, std::placeholders::_3,
@@ -118,4 +119,18 @@ void CameraBboxPlugin::OnNewFrame(const unsigned char * /*_image*/,
     this->height, this->depth, this->format,
     "/tmp/camera/me.jpg");
     */
+
+}
+
+void CameraBboxPlugin::Update()
+{
+  ignition::math::Vector3d ptI;
+  ptI.Set(4.6,0,0);
+  this->width = this->camera->ImageWidth();
+  this->height = this->camera->ImageHeight();
+  this->depth = this->camera->ImageDepth();
+  this->format = this->camera->ImageFormat();
+  auto pixelsI = this->camera->Project(ptI);
+  std::cout << pixelsI << '\n' << this->camera->WorldPose() << std::endl;
+
 }
