@@ -5,7 +5,6 @@
 #include <gazebo/rendering/Visual.hh>
 #include <gazebo/transport/Node.hh>
 #include "VisualBboxPlugin.hh"
-#include <ignition/math/Vector3.hh>
 namespace gazebo
 {
 	class VisualBboxPluginPrivate
@@ -36,7 +35,13 @@ namespace gazebo
 	public: transport::SubscriberPtr infosub;
 
 	/// \brief True to use Wall time, false to use sim time
-    public: bool useWallTime;
+  public: bool useWallTime;
+
+	/// Ros Node handle
+	public: ros::NodeHandle nh;
+
+	/// Ros publisher : to publish corners array
+	public: ros::Publisher pub;
 	};
 }
 
@@ -47,6 +52,10 @@ GZ_REGISTER_VISUAL_PLUGIN(VisualBboxPlugin)
 
 VisualBboxPlugin::VisualBboxPlugin() : dataPtr(new VisualBboxPluginPrivate)
 {
+	int argc = 0;
+	char *argv = nullptr;
+	ros::init(argc, &argv, "VisualBboxPlugin");
+	this->dataPtr->pub = this->dataPtr->nh.advertise<std_msgs::Float64MultiArray>("corners",2);
 }
 
 VisualBboxPlugin::~VisualBboxPlugin()
@@ -115,7 +124,14 @@ void VisualBboxPlugin::Update()
 	z_max = max_vec[2];
 	std::cout << " Min " << x_min << '\n' << y_min << '\n'<< z_min << '\n';
 	std::cout << " Max" << x_max << '\n' << y_max << '\n' << z_max << '\n';
-
+	corners.data.clear(); // clear the contents of the array if any
+	corners.data.push_back(x_min); // append the corners to the corners array
+	corners.data.push_back(y_min);
+	corners.data.push_back(z_min);
+	corners.data.push_back(x_max);
+	corners.data.push_back(y_max);
+	corners.data.push_back(z_max);
+  this->dataPtr->pub.publish(corners);
 }
 
 

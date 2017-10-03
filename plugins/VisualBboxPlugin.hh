@@ -3,6 +3,9 @@
 
 #include <gazebo/common/Plugin.hh>
 #include <memory>
+#include <ros/ros.h>
+#include <std_msgs/Float64MultiArray.h>
+
 namespace gazebo
 {
 
@@ -24,6 +27,8 @@ namespace gazebo
 
 	/// Defining variables to store the x,y,z coordiantes of min and max corners
 	double x_min, y_min, z_min, x_max, y_max, z_max;
+	/// Array to store the corners:
+	std_msgs::Float64MultiArray corners;
 	/// \brief	Callback to receive info.
 	private: void OnInfo(ConstPosesStampedPtr &_msg);
 
