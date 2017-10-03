@@ -6,25 +6,18 @@
 #include <cstdio>
 #include <fstream>
 #include <cmath>
-
 #include "geometry.h"
-float h = 1.9;
-float b = 0.55;
-float w = 0.8;
+#include "ros/ros.h"
+#include "std_msgs/Float64MultiArray.h"
 
-Vec3f pA_o(b/2,w/2,0); // Vertices of cuboid with respect to the object's origin.
-Vec3f pB_o(-b/2,w/2,0);
-Vec3f pC_o(-b/2,-w/2,0);
-Vec3f pD_o(b/2,-w/2,0);
-Vec3f pE_o(b/2,w/2,h);
-Vec3f pF_o(-b/2,w/2,h);
-Vec3f pG_o(-b/2,-w/2,h);
-Vec3f pH_o(b/2,-w/2,h);
 
-// Vec3f pC_w(-1.490300, 0.025726, 2.22266);
-// Vec3f pO_w(4.706141, 1.250742, 0.148441);
-Vec3f pC_w (0 ,0, 1);
+float x_min, y_min, z_min, x_max, y_max, z_max;
+Vec3f pWorldA, pWorldB, pWorldC, pWorldD, pWorldE, pWorldF, pWorldG, pWorldH;
+
+// Object's world coordiantes along with roll putch and yaw :
 Vec3f pO_w (4.5, 0, 0.2);
+float rO = 0 , pO = 0 , yO = 0 ;
+
 Matrix44f RT;
 void computeTransformationMatrix(float r , float p, float y, Vec3f c)
 {
@@ -42,60 +35,36 @@ void computeTransformationMatrix(float r , float p, float y, Vec3f c)
 
 }
 
-void computePixelCoordinates(
-    const Vec3f pWorld,
-    Vec2i &pRaster,
-    const Matrix44f &worldToCamera,
-    const float &canvasWidth,
-    const float &canvasHeight,
-    const uint32_t &imageWidth,
-    const uint32_t &imageHeight
-)
+std::vector<double> data(6);
+void subscriberCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 {
-    Vec3f pCamera;
-    worldToCamera.multVecMatrix(pWorld, pCamera);
-    Vec2f pScreen;
-    pScreen.x = pCamera.x / -pCamera.z;
-    pScreen.y = pCamera.y / -pCamera.z;
-    Vec2f pNDC;
-    pNDC.x = (pScreen.x + canvasWidth * 0.5) / canvasWidth;
-    pNDC.y = (pScreen.y + canvasHeight * 0.5) / canvasHeight;
-    pRaster.x = (int)(pNDC.x * imageWidth);
-    pRaster.y = (int)((1 - pNDC.y) * imageHeight);
-}
+  // Accessing data from the message
+  data = msg->data;
 
-float nearClippingPlane = 0.1;
-float farClipingPlane = 100;
+  // storing the data in max and min corners
+  x_min = data[0];
+  y_min = data[1];
+  z_min = data[2];
 
-uint32_t imageWidth  = 512 ;
-uint32_t imageHeight = 512 ;
+  x_max = data[0];
+  y_max = data[1];
+  z_max = data[2];
 
-int main (int agrc, char **argv)
-{
-  // define canvas width & height
-  float canvasWidth = 1, canvasHeight = 1 ;
-  // define image height and width here
-  uint32_t imageWidth = 512, imageHeight = 512;
-  float rC = 0 , pC = 0 , yC = 0 ;
+  // Vertices of cuboid with respect to the object's origin.
+  Vec3f pA_o(x_min, y_min, z_min);
+  Vec3f pB_o(-x_min, y_min, z_min);
+  Vec3f pC_o(-x_min, -y_min, z_min);
+  Vec3f pD_o(x_min, -y_min, z_min);
+  Vec3f pE_o(x_max, y_max, z_max);
+  Vec3f pF_o(-x_max, y_max, z_max);
+  Vec3f pG_o(-x_max, -y_max, z_max);
+  Vec3f pH_o(x_max, -y_max, z_max);
 
-  // transformation matrix from cameraToWorld
-  computeTransformationMatrix(rC,pC,yC,pC_w);
-  // transformation matrix from worldToCamera
-
-  Matrix44f worldToCamera = RT.inverse();
-  // std::cout << RT << '\n';
-  // std::cout << worldToCamera << '\n';
-
-  // float rO = -0.028269 , pO = -0.099866 , yO = -0.870504 ;
-  float rO = 0 , pO = 0 , yO = 0 ;
-
-  // float rO = 0, pO = 0, yO= 0;
   // transformation matrix from objectToWorld
   computeTransformationMatrix(rO,pO,yO,pO_w);
   // transformation matrix from worldToObject
   Matrix44f worldToObject = RT.inverse();
 
-  Vec3f pWorldA, pWorldB, pWorldC, pWorldD, pWorldE, pWorldF, pWorldG, pWorldH;
   // compute the world coordinates of the corners of the box
   RT.Matrix44f::multVecMatrix(pA_o,pWorldA);
   RT.Matrix44f::multVecMatrix(pB_o,pWorldB);
@@ -115,22 +84,16 @@ int main (int agrc, char **argv)
   std::cout << pWorldG << '\n';
   std::cout << pWorldH << '\n';
 
-  Vec2i vARaster, vBRaster, vCRaster, vDRaster, vERaster, vFRaster, vGRaster, vHRaster;
-  computePixelCoordinates(pWorldA, vARaster, worldToCamera, canvasWidth, canvasHeight, imageWidth, imageHeight);
-  computePixelCoordinates(pWorldB, vBRaster, worldToCamera, canvasWidth, canvasHeight, imageWidth, imageHeight);
-  computePixelCoordinates(pWorldC, vCRaster, worldToCamera, canvasWidth, canvasHeight, imageWidth, imageHeight);
-  computePixelCoordinates(pWorldD, vDRaster, worldToCamera, canvasWidth, canvasHeight, imageWidth, imageHeight);
-  computePixelCoordinates(pWorldE, vERaster, worldToCamera, canvasWidth, canvasHeight, imageWidth, imageHeight);
-  computePixelCoordinates(pWorldF, vFRaster, worldToCamera, canvasWidth, canvasHeight, imageWidth, imageHeight);
-  computePixelCoordinates(pWorldG, vGRaster, worldToCamera, canvasWidth, canvasHeight, imageWidth, imageHeight);
-  computePixelCoordinates(pWorldH, vHRaster, worldToCamera, canvasWidth, canvasHeight, imageWidth, imageHeight);
-  std::cout << vARaster << '\n';
-  std::cout << vBRaster << '\n';
-  std::cout << vCRaster << '\n';
-  std::cout << vDRaster << '\n';
-  std::cout << vFRaster << '\n';
-  std::cout << vFRaster << '\n';
-  std::cout << vGRaster << '\n';
-  std::cout << vHRaster << '\n';
+}
+
+int main (int argc, char **argv)
+{
+  ros::init(argc, argv , "perspectiveProjection");
+  // NodeHandle for ros
+  ros::NodeHandle nh;
+  // subscriber for ros
+  ros::Subscriber sub = nh.subscribe("corners", 1, subscriberCallback);
+  // spin continuously
+  ros::spin();
 
   }

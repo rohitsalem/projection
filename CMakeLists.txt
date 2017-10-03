@@ -9,6 +9,8 @@ project(projection)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   gazebo_ros
+  roscpp
+  std_msgs
 )
 
 find_package(gazebo REQUIRED)
@@ -107,6 +109,7 @@ catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES projection
    CATKIN_DEPENDS gazebo_ros
+	
 #  DEPENDS system_lib
 )
 
@@ -117,7 +120,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+ include
  ${catkin_INCLUDE_DIRS}
  ${GAZEBO_INCLUDE_DIRS}
  ${SDFormat_INCLUDE_DIRS}
@@ -129,6 +132,9 @@ target_link_libraries( VisualBboxPlugin ${GAZEBO_LIBRARIES})
 
 add_library(CameraBboxPlugin SHARED plugins/CameraBboxPlugin.cc)
 target_link_libraries( CameraBboxPlugin ${GAZEBO_LIBRARIES})
+
+add_executable(perspectiveProjectionNode src/persprojection.cpp)
+target_link_libraries(perspectiveProjectionNode ${catkin_LIBRARIES})
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
