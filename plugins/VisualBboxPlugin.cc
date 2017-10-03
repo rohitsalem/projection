@@ -5,7 +5,7 @@
 #include <gazebo/rendering/Visual.hh>
 #include <gazebo/transport/Node.hh>
 #include "VisualBboxPlugin.hh"
-
+#include <ignition/math/Vector3.hh>
 namespace gazebo
 {
 	class VisualBboxPluginPrivate
@@ -95,11 +95,27 @@ void VisualBboxPlugin::Update()
 		gzerr << "The Visual is null" <<std::endl;
 		return;
 	}
-	// auto box = this->dataPtr->visual->BoundingBox();
-	// this->dataPtr->visual->GetHighlighted();
+	// shows the BoundingBox of the object in gazebo
 	this->dataPtr->visual->ShowBoundingBox();
+	// returns a box object (ignition::math::Box)
 	auto bbox =  this->dataPtr->visual->BoundingBox();
-	// std::cout << "/* message */" << bbox <<'\n';
+	// to get the minimum corner
+	auto min_vec = bbox.Min();
+	// to get the maximum corner
+	auto max_vec = bbox.Max();
+
+	// Storing the vector in terms of simple variables (double type)
+	// min corner of the bbox
+ 	x_min = min_vec[0];
+	y_min = min_vec[1];
+	z_min = min_vec[2];
+	//max corner of the bbox
+	x_max = max_vec[0];
+	y_max = max_vec[1];
+	z_max = max_vec[2];
+	std::cout << " Min " << x_min << '\n' << y_min << '\n'<< z_min << '\n';
+	std::cout << " Max" << x_max << '\n' << y_max << '\n' << z_max << '\n';
+
 }
 
 

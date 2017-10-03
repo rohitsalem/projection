@@ -63,40 +63,11 @@ void CameraBboxPlugin::Load(sensors::SensorPtr _sensor, sdf::ElementPtr /*_sdf*/
     gzerr << "CameraBboxPlugin not attached to a camera sensor\n";
     return;
   }
-  // ignition::math::Vector3d ptA, ptB, ptC, ptD, ptE, ptF, ptG , ptH,ptI;
-  // ptA.Set(4.775,1.6,0.2);
-  // ptB.Set(4.225,1.6,0.2);
-  // ptC.Set(4.225,0.8,0.2);
-  // ptD.Set(4.775,0.8,0.2);
-  // ptE.Set(4.775,1.6,2.1);
-  // ptF.Set(4.225,1.6,2.1);
-  // ptG.Set(4.225,0.8,2.1);
-  // ptH.Set(4.775,0.8,2.1);
-  // ptA.Set(4.775,0.4,0.2);
-  // ptB.Set(4.225,0.4,0.2);
-  // ptC.Set(4.225,-0.4,0.2);
-  // ptD.Set(4.775,-0.4,0.2);
-  // ptE.Set(4.775,0.4,2.1);
-  // ptF.Set(4.225,0.4,2.1);
-  // ptG.Set(4.225,-0.4,2.1);
-  // ptH.Set(4.775,-0.4,2.1);
-  // ptI.Set(4.6,0,0);
-  // this->width = this->camera->ImageWidth();
-  // this->height = this->camera->ImageHeight();
-  // this->depth = this->camera->ImageDepth();
-  // this->format = this->camera->ImageFormat();
+  this->width = this->camera->ImageWidth();
+  this->height = this->camera->ImageHeight();
+  this->depth = this->camera->ImageDepth();
+  this->format = this->camera->ImageFormat();
 
-  // auto pixelsA = this->camera->Project(ptA);
-  // auto pixelsB = this->camera->Project(ptB);
-  // auto pixelsC = this->camera->Project(ptC);
-  // auto pixelsD = this->camera->Project(ptD);
-  // auto pixelsE = this->camera->Project(ptE);
-  // auto pixelsF = this->camera->Project(ptF);
-  // auto pixelsG = this->camera->Project(ptG);
-  // auto pixelsH = this->camera->Project(ptH);
-  // auto pixelsI = this->camera->Project(ptI);
-  // std::cout << "pixels" << pixelsA << '\n' << pixelsB << "\n" << pixelsC << "\n" << pixelsD << "\n";
-  // std::cout << "pixels" << pixelsE << '\n' << pixelsF << "\n" << pixelsG << "\n" << pixelsH << "\n";
   // std::cout << pixelsI << '\n' << this->camera->WorldPose() << std::endl;
   this->connections.push_back(
      event::Events::ConnectPreRender(std::bind(&CameraBboxPlugin::Update, this)));
@@ -124,13 +95,29 @@ void CameraBboxPlugin::OnNewFrame(const unsigned char * /*_image*/,
 
 void CameraBboxPlugin::Update()
 {
-  ignition::math::Vector3d ptI;
-  ptI.Set(4.6,0,0);
-  this->width = this->camera->ImageWidth();
-  this->height = this->camera->ImageHeight();
-  this->depth = this->camera->ImageDepth();
-  this->format = this->camera->ImageFormat();
-  auto pixelsI = this->camera->Project(ptI);
-  std::cout << pixelsI << '\n' << this->camera->WorldPose() << std::endl;
+
+  ignition::math::Vector3d ptA, ptB, ptC, ptD, ptE, ptF, ptG , ptH;
+  ptA.Set(4.775,0.4,0.2);
+  ptB.Set(4.225,0.4,0.2);
+  ptC.Set(4.225,-0.4,0.2);
+  ptD.Set(4.775,-0.4,0.2);
+  ptE.Set(4.775,0.4,2.1);
+  ptF.Set(4.225,0.4,2.1);
+  ptG.Set(4.225,-0.4,2.1);
+  ptH.Set(4.775,-0.4,2.1);
+  auto pixelsA = this->camera->Project(ptA);
+  auto pixelsB = this->camera->Project(ptB);
+  auto pixelsC = this->camera->Project(ptC);
+  auto pixelsD = this->camera->Project(ptD);
+  auto pixelsE = this->camera->Project(ptE);
+  auto pixelsF = this->camera->Project(ptF);
+  auto pixelsG = this->camera->Project(ptG);
+  auto pixelsH = this->camera->Project(ptH);
+  std::cout << "pixelsABCD" <<'\n'<< pixelsA << '\n' << pixelsB << "\n" << pixelsC << "\n" << pixelsD << "\n";
+  std::cout << "pixelsEFGH" << '\n'<< pixelsE << '\n' << pixelsF << "\n" << pixelsG << "\n" << pixelsH << "\n";
+  // ignition::math::Vector3d ptI;
+  // ptI.Set(4.6,0,0);
+  // auto pixelsI = this->camera->Project(ptI);
+  // std::cout << pixelsI << '\n' << this->camera->WorldPose() << std::endl;
 
 }
