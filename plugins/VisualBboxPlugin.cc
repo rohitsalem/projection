@@ -122,8 +122,8 @@ void VisualBboxPlugin::Update()
 	x_max = max_vec[0];
 	y_max = max_vec[1];
 	z_max = max_vec[2];
-	std::cout << " Min " << x_min << '\n' << y_min << '\n'<< z_min << '\n';
-	std::cout << " Max" << x_max << '\n' << y_max << '\n' << z_max << '\n';
+	// std::cout << " Min " << x_min << '\n' << y_min << '\n'<< z_min << '\n';
+	// std::cout << " Max" << x_max << '\n' << y_max << '\n' << z_max << '\n';
 	corners.data.clear(); // clear the contents of the array if any
 	corners.data.push_back(x_min); // append the corners to the corners array
 	corners.data.push_back(y_min);

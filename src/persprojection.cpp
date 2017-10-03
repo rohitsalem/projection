@@ -16,7 +16,7 @@ class persProjection
 public:
   persProjection()
   {
-    pub = nh.advertise<std_msgs::Float64MultiArray>("ObjectWorldCoordinates",2);
+    pub = nh.advertise<std_msgs::Float64MultiArray>("objectBoxWorldCoordinates",1);
     sub = nh.subscribe("corners", 1, &persProjection::subscriberCallback, this);
   }
 
