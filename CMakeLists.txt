@@ -128,10 +128,10 @@ include_directories(
 link_directories(${GAZEBO_LIBRARY_DIRS})
 ## Declare a C++ library
 add_library(VisualBboxPlugin SHARED plugins/VisualBboxPlugin.cc)
-target_link_libraries( VisualBboxPlugin ${GAZEBO_LIBRARIES})
+target_link_libraries( VisualBboxPlugin ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES})
 
 add_library(CameraBboxPlugin SHARED plugins/CameraBboxPlugin.cc)
-target_link_libraries( CameraBboxPlugin ${GAZEBO_LIBRARIES})
+target_link_libraries( CameraBboxPlugin ${GAZEBO_LIBRARIES} )
 
 add_executable(perspectiveProjectionNode src/persprojection.cpp)
 target_link_libraries(perspectiveProjectionNode ${catkin_LIBRARIES})
