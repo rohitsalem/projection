@@ -38,7 +38,7 @@ namespace gazebo
   public: bool useWallTime;
 
 	/// Ros Node handle
-	public: ros::NodeHandle nh;
+	public: ros::NodeHandle *nh = nullptr;
 
 	/// Ros publisher : to publish corners array
 	public: ros::Publisher pub;
@@ -55,7 +55,8 @@ VisualBboxPlugin::VisualBboxPlugin() : dataPtr(new VisualBboxPluginPrivate)
 	int argc = 0;
 	char *argv = nullptr;
 	ros::init(argc, &argv, "VisualBboxPlugin");
-	this->dataPtr->pub = this->dataPtr->nh.advertise<std_msgs::Float64MultiArray>("corners",2);
+	this->dataPtr->nh = new ros::NodeHandle();
+	this->dataPtr->pub = this->dataPtr->nh->advertise<std_msgs::Float64MultiArray>("corners",1);
 }
 
 VisualBboxPlugin::~VisualBboxPlugin()
@@ -63,6 +64,7 @@ VisualBboxPlugin::~VisualBboxPlugin()
 	this->dataPtr->infosub.reset();
 	if(this->dataPtr->node)
 		this->dataPtr->node->Fini();
+	delete this->dataPtr->nh;
 }
 
 void VisualBboxPlugin::Load (rendering::VisualPtr _visual, sdf::ElementPtr _sdf)
@@ -92,13 +94,10 @@ void VisualBboxPlugin::Load (rendering::VisualPtr _visual, sdf::ElementPtr _sdf)
 		this->dataPtr->infosub = this->dataPtr->node->Subscribe(
 			"~/pose/local/info", &VisualBboxPlugin::OnInfo,this);
 	}
-
 }
 
 void VisualBboxPlugin::Update()
 {
-	std::lock_guard<std::mutex> lock(this->dataPtr->mutex);
-
 	if(!this->dataPtr->visual)
 	{
 		gzerr << "The Visual is null" <<std::endl;
@@ -122,8 +121,7 @@ void VisualBboxPlugin::Update()
 	x_max = max_vec[0];
 	y_max = max_vec[1];
 	z_max = max_vec[2];
-	std::cout << " Min " << x_min << '\n' << y_min << '\n'<< z_min << '\n';
-	// std::cout << " Max" << x_max << '\n' << y_max << '\n' << z_max << '\n';
+
 	corners.data.clear(); // clear the contents of the array if any
 	corners.data.push_back(x_min); // append the corners to the corners array
 	corners.data.push_back(y_min);
