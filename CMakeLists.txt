@@ -10,6 +10,7 @@ project(projection)
 find_package(catkin REQUIRED COMPONENTS
   gazebo_ros
   roscpp
+  rospy
   std_msgs
 )
 
