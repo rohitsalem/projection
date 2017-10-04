@@ -25,6 +25,10 @@
 #include "gazebo/util/system.hh"
 #include "gazebo/rendering/Scene.hh"
 #include "gazebo/common/Events.hh"
+#include "ros/ros.h"
+#include "std_msgs/Float64MultiArray.h"
+#include "std_msgs/Int32MultiArray.h"
+
 namespace gazebo
 {
   class CameraBboxPluginPrivate;
@@ -45,9 +49,19 @@ namespace gazebo
 
     protected: sensors::CameraSensorPtr parentSensor;
     protected: rendering::CameraPtr camera;
-    public: void Update();
+    public: void Update(std::vector<double> data);
+    public: void Callback(const std_msgs::Float64MultiArray::ConstPtr& msg);
     private: event::ConnectionPtr newFrameConnection;
     protected: std::vector<event::ConnectionPtr> connections;
+
+    public: std::vector<double> data;
+    // public: std::vector<double> *z= new std::vector<double>();
+
+    public: ros::NodeHandle nh;
+    public: ros::Publisher pub;
+    public: ros::Subscriber sub;
+
+    public: std_msgs::Int32MultiArray pixels;
 
   };
 }

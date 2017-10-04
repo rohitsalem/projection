@@ -24,6 +24,7 @@
 #include "CameraBboxPlugin.hh"
 #include <ignition/math.hh>
 
+
 using namespace gazebo;
 GZ_REGISTER_SENSOR_PLUGIN(CameraBboxPlugin);
 
@@ -31,7 +32,11 @@ GZ_REGISTER_SENSOR_PLUGIN(CameraBboxPlugin);
 CameraBboxPlugin::CameraBboxPlugin()
 : SensorPlugin(), width(0), height(0), depth(0)
 {
+
+  sub = nh.subscribe("objectBoxWorldCoordinates",1 , &CameraBboxPlugin::Callback , this);
+  pub = nh.advertise<std_msgs::Int32MultiArray>("pixels",1);
 }
+
 
 /////////////////////////////////////////////////
 CameraBboxPlugin::~CameraBboxPlugin()
@@ -69,8 +74,7 @@ void CameraBboxPlugin::Load(sensors::SensorPtr _sensor, sdf::ElementPtr /*_sdf*/
   this->format = this->camera->ImageFormat();
 
   // std::cout << pixelsI << '\n' << this->camera->WorldPose() << std::endl;
-  this->connections.push_back(
-     event::Events::ConnectPreRender(std::bind(&CameraBboxPlugin::Update, this)));
+
   this->newFrameConnection = this->camera->ConnectNewImageFrame(
       std::bind(&CameraBboxPlugin::OnNewFrame, this,
         std::placeholders::_1, std::placeholders::_2, std::placeholders::_3,
@@ -93,18 +97,23 @@ void CameraBboxPlugin::OnNewFrame(const unsigned char * /*_image*/,
 
 }
 
-void CameraBboxPlugin::Update()
+void CameraBboxPlugin::Callback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 {
-
+  data = msg->data;
+  this->connections.push_back(
+     event::Events::ConnectPreRender(std::bind(&CameraBboxPlugin::Update, this, data)));
+}
+void CameraBboxPlugin::Update(std::vector<double> d)
+{
   ignition::math::Vector3d ptA, ptB, ptC, ptD, ptE, ptF, ptG , ptH;
-  ptA.Set(4.775,0.4,0.2);
-  ptB.Set(4.225,0.4,0.2);
-  ptC.Set(4.225,-0.4,0.2);
-  ptD.Set(4.775,-0.4,0.2);
-  ptE.Set(4.775,0.4,2.1);
-  ptF.Set(4.225,0.4,2.1);
-  ptG.Set(4.225,-0.4,2.1);
-  ptH.Set(4.775,-0.4,2.1);
+  ptA.Set(d[0],d[1],d[2]);
+  ptB.Set(d[3],d[4],d[5]);
+  ptC.Set(d[6],d[7],d[8]);
+  ptD.Set(d[9],d[10],d[11]);
+  ptE.Set(d[12],d[13],d[14]);
+  ptF.Set(d[15],d[16],d[17]);
+  ptG.Set(d[18],d[19],d[20]);
+  ptH.Set(d[21],d[22],d[23]);
   auto pixelsA = this->camera->Project(ptA);
   auto pixelsB = this->camera->Project(ptB);
   auto pixelsC = this->camera->Project(ptC);
@@ -113,11 +122,26 @@ void CameraBboxPlugin::Update()
   auto pixelsF = this->camera->Project(ptF);
   auto pixelsG = this->camera->Project(ptG);
   auto pixelsH = this->camera->Project(ptH);
-  std::cout << "pixelsABCD" <<'\n'<< pixelsA << '\n' << pixelsB << "\n" << pixelsC << "\n" << pixelsD << "\n";
-  std::cout << "pixelsEFGH" << '\n'<< pixelsE << '\n' << pixelsF << "\n" << pixelsG << "\n" << pixelsH << "\n";
-  // ignition::math::Vector3d ptI;
-  // ptI.Set(4.6,0,0);
-  // auto pixelsI = this->camera->Project(ptI);
-  // std::cout << pixelsI << '\n' << this->camera->WorldPose() << std::endl;
+
+  pixels.data.push_back(pixelsA[0]);
+  pixels.data.push_back(pixelsA[1]);
+  pixels.data.push_back(pixelsB[0]);
+  pixels.data.push_back(pixelsB[1]);
+  pixels.data.push_back(pixelsC[0]);
+  pixels.data.push_back(pixelsC[1]);
+  pixels.data.push_back(pixelsD[0]);
+  pixels.data.push_back(pixelsD[1]);
+  pixels.data.push_back(pixelsE[0]);
+  pixels.data.push_back(pixelsE[1]);
+  pixels.data.push_back(pixelsF[0]);
+  pixels.data.push_back(pixelsF[1]);
+  pixels.data.push_back(pixelsG[0]);
+  pixels.data.push_back(pixelsG[1]);
+  pixels.data.push_back(pixelsH[0]);
+  pixels.data.push_back(pixelsH[1]);
+  this->pub.publish(pixels);
+  // std::cout << "pixelsABCD" <<'\n'<< pixelsA << '\n' << pixelsB << "\n" << pixelsC << "\n" << pixelsD << "\n";
+  // std::cout << "pixelsEFGH" << '\n'<< pixelsE << '\n' << pixelsF << "\n" << pixelsG << "\n" << pixelsH << "\n";
+
 
 }
