@@ -52,9 +52,9 @@ public:
     x_min = data[0];  // Min corners
     y_min = data[1];
     z_min = data[2];
-    x_max = data[0]; // Max corners
-    y_max = data[1];
-    z_max = data[2];
+    x_max = data[3]; // Max corners
+    y_max = data[4];
+    z_max = data[5];
 
     // Vertices of cuboid with respect to the object's origin.
     Vec3f pA_o(x_min, y_min, z_min);
