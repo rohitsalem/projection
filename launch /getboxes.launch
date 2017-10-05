@@ -2,6 +2,8 @@
 <launch>
   <include file = "$(find gazebo_ros)/launch/empty_world.launch">
     <arg name = "verbose" value = "true"/>
+    <arg name = "gui" value = "true"/>
     <arg name = "world_name" value = "$(find projection)/worlds/camera_person.world"/>
   </include>
+  <node name = "perspectiveProjectionNode" pkg = "projection" type ="perspectiveProjectionNode" output ="screen"/>
 </launch>
