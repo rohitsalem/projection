@@ -136,6 +136,8 @@ target_link_libraries( CameraBboxPlugin ${GAZEBO_LIBRARIES} )
 
 add_executable(perspectiveProjectionNode src/perspectiveProjection.cpp)
 target_link_libraries(perspectiveProjectionNode ${catkin_LIBRARIES})
+
+install(DIRECTORY models DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
