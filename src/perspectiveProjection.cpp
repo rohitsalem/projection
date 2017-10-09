@@ -21,9 +21,10 @@ public:
   }
 
   float x_min, y_min, z_min, x_max, y_max, z_max;
+  float x_world, y_world, z_world, roll_world, pitch_world, yaw_world ; // world coordiantes of the object
   Vec3f pWorldA, pWorldB, pWorldC, pWorldD, pWorldE, pWorldF, pWorldG, pWorldH;
   std::vector<double> data;
-  float rO,pO,yO;
+
 
   Matrix44f RT;
   std_msgs::Float64MultiArray worldArr;
@@ -55,6 +56,12 @@ public:
     x_max = data[3]; // Max corners
     y_max = data[4];
     z_max = data[5];
+    x_world = data[6]; // World coordinates
+    y_world = data[7];
+    z_world = data[8];
+    roll_world = data[9];
+    pitch_world = data[10];
+    yaw_world = data[11];
 
     // Vertices of cuboid with respect to the object's origin.
     Vec3f pA_o(x_min, y_min, z_min);
@@ -67,10 +74,9 @@ public:
     Vec3f pH_o(x_max, -y_max, z_max);
 
     // Object's world coordiantes along with roll putch and yaw :
-    Vec3f pO_w (4.5, -0.5, 1.2);
-    rO = 0 ; pO = 0 ; yO = 1 ;
+    Vec3f pO_w (x_world, y_world, z_world);
     // transformation matrix from objectToWorld
-    computeTransformationMatrix(rO,pO,yO,pO_w);
+    computeTransformationMatrix(roll_world, pitch_world, yaw_world, pO_w);
     // transformation matrix from worldToObject
     Matrix44f worldToObject = RT.inverse();
 
@@ -118,6 +124,7 @@ private:
   ros::NodeHandle nh;
   ros::Subscriber sub;
   ros::Publisher pub;
+
 };
 int main (int argc, char **argv)
 {
