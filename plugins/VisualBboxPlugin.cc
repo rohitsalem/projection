@@ -5,6 +5,7 @@
 #include <gazebo/rendering/Visual.hh>
 #include <gazebo/transport/Node.hh>
 #include "VisualBboxPlugin.hh"
+
 namespace gazebo
 {
 	class VisualBboxPluginPrivate
@@ -42,6 +43,8 @@ namespace gazebo
 
 	/// Ros publisher : to publish corners array
 	public: ros::Publisher pub;
+
+
 	};
 }
 
@@ -104,7 +107,7 @@ void VisualBboxPlugin::Update()
 		return;
 	}
 	// shows the BoundingBox of the object in gazebo
-	this->dataPtr->visual->ShowBoundingBox();
+	// this->dataPtr->visual->ShowBoundingBox();
 	// returns a box object (ignition::math::Box)
 	auto bbox =  this->dataPtr->visual->BoundingBox();
 	// to get the minimum corner
@@ -122,6 +125,8 @@ void VisualBboxPlugin::Update()
 	y_max = max_vec[1];
 	z_max = max_vec[2];
 
+	auto pos = this->dataPtr->visual->WorldPose().Pos();
+	auto rot = this->dataPtr->visual->WorldPose().Rot();
 	corners.data.clear(); // clear the contents of the array if any
 	corners.data.push_back(x_min); // append the corners to the corners array
 	corners.data.push_back(y_min);
@@ -129,7 +134,15 @@ void VisualBboxPlugin::Update()
 	corners.data.push_back(x_max);
 	corners.data.push_back(y_max);
 	corners.data.push_back(z_max);
+	corners.data.push_back(pos.X()); // Appending the world pose to the same corners array
+	corners.data.push_back(pos.Y());
+	corners.data.push_back(pos.Z());
+	corners.data.push_back(rot.Roll());
+	corners.data.push_back(rot.Pitch());
+	corners.data.push_back(rot.Yaw());
+
   this->dataPtr->pub.publish(corners);
+
 }
 
 
