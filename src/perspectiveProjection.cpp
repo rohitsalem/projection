@@ -31,7 +31,7 @@ public:
 
   void computeTransformationMatrix(float r , float p, float y, Vec3f c)
   {
-    Matrix44f Rx(1, 0, 0, 0, 0, cos(r), -sin(r), 0, 0, sin(r), cos(r), 0, 0, 0, 0, 1);
+    Matrix44f Rx(1, 0, 0, 0, 0, cos(r), -sin(-r), 0, 0, sin(-r), cos(r), 0, 0, 0, 0, 1);
     Matrix44f Ry(cos(p), 0, sin(p), 0, 0, 1, 0, 0, -sin(p), 0, cos(p), 0, 0, 0, 0, 1);
     Matrix44f Rz(cos(y), -sin(y), 0, 0, sin(y), cos(y), 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
     Matrix44f T(1,0,0,0,0,1,0,0,0,0,1,0,c[0],c[1],c[2],1);
