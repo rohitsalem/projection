@@ -14,7 +14,9 @@ class ShowBoundingBox:
     self.image_pub = rospy.Publisher("/ShowBoundingBox/image_raw",Image,queue_size =1 )
     self.bridge = CvBridge()
     self.image_sub = message_filters.Subscriber("/camera/rgb/image_raw",Image)
+    self.filtered_image_pub = rospy.Publisher("ShowBoundingBox/filtered/image", Image, queue_size =1)
     self.pixel_sub = message_filters.Subscriber("/pixels", QuaternionStamped)
+    self.filtered_pixel_pub = rospy.Publisher("ShowBoundingBox/filtered/pixels", Image, queue_size =1)
     self.ts = message_filters.TimeSynchronizer([self.image_sub,self.pixel_sub],10)
     self.ts.registerCallback(self.callback)
 
@@ -27,10 +29,11 @@ class ShowBoundingBox:
     maxx = int(pixels.quaternion.y)
     miny = int(pixels.quaternion.z)
     maxy = int(pixels.quaternion.w)
-    # cv_image = cv2.resize(cv_image,(512,512))
-    cv_image = cv2.rectangle(cv_image,(minx,miny),(maxx,maxy),(0,0,0),3)
+    cv_image = cv2.rectangle(cv_image,(minx,miny),(maxx,maxy),(0,0,0),2)
     try:
       self.image_pub.publish(self.bridge.cv2_to_imgmsg(cv_image, "bgr8"))
+      self.filtered_image_pub.publish(image)
+      self.filtered_pixel_pub.publish(pixels)
     except CvBridgeError as e:
       print(e)
 
