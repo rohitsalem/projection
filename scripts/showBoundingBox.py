@@ -16,7 +16,7 @@ class ShowBoundingBox:
     self.image_sub = message_filters.Subscriber("/camera/rgb/image_raw",Image)
     self.filtered_image_pub = rospy.Publisher("ShowBoundingBox/filtered/image", Image, queue_size =1)
     self.pixel_sub = message_filters.Subscriber("/pixels", QuaternionStamped)
-    self.filtered_pixel_pub = rospy.Publisher("ShowBoundingBox/filtered/pixels", Image, queue_size =1)
+    self.filtered_pixel_pub = rospy.Publisher("ShowBoundingBox/filtered/pixels", QuaternionStamped, queue_size =1)
     self.ts = message_filters.TimeSynchronizer([self.image_sub,self.pixel_sub],10)
     self.ts.registerCallback(self.callback)
 
