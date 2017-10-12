@@ -45,6 +45,6 @@ void SetPosePlugin::Update()
   if(this->flag)
   {
     model->SetWorldPose(ignition::math::Pose3d(x, y, z, roll, pitch, yaw));
-
+    this->flag = false;
   }
 }

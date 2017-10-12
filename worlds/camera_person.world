@@ -113,8 +113,8 @@
               <far>100</far>
             </clip>
           </camera>
-          <plugin name= 'CameraBboxPlugin' filename='libCameraBboxPlugin.so'>
-          </plugin>
+          <plugin name= 'CameraBboxPlugin' filename='libCameraBboxPlugin.so'/>
+
           <plugin name='camera_controller' filename='libgazebo_ros_camera.so'>
             <always_on>true</always_on>
             <update_rate>30.0</update_rate>
@@ -231,7 +231,7 @@
       </link>
       <pose frame=''>5.75258 0.179604 0 0 -0 0</pose>
       <static>1</static>
-      <!-- <plugin name='SetPosePlugin' filename='libSetPosePlugin.so'/> -->
+      <plugin name='SetPosePlugin' filename='libSetPosePlugin.so'/>
     </model>
     <state world_name='default'>
       <sim_time>97 672000000</sim_time>
