@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  vision_msgs
 )
 
 find_package(gazebo REQUIRED)
@@ -144,7 +145,7 @@ install(DIRECTORY models DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 catkin_install_python(PROGRAMS scripts/showBoundingBox.py DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 catkin_install_python(PROGRAMS scripts/setPose.py DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
-
+catkin_install_python(PROGRAMS scripts/validate.py DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
