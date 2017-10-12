@@ -19,7 +19,8 @@ class validate:
         self.image_detector_sub = message_filters.Subscriber("/debug_image", Image)
         # subscriber to subcribe pixel values of the 2d bbox from the object detector
         self.bbox_detector_sub = message_filters.Subscriber("/objects", Detection2DArray)
-        # self.ts = message_filters.TimeSynchronizer([self.image_gazebo_sub, self.bbox_gazbeo_sub, self.image_detector_sub, self.bbox_detector_sub],10)
+
+        # self.overlap_pub = rospy.Publisher("/validate", Float32, queue_size = 1)
         self.ts = message_filters.ApproximateTimeSynchronizer([self.image_gazebo_sub, self.bbox_gazbeo_sub,self.image_detector_sub, self.bbox_detector_sub],10,0.3)
 
         self.ts.registerCallback(self.callback)
@@ -57,28 +58,30 @@ class validate:
                 area_gz = float((maxx_gz-minx_gz)*(maxy_gz-miny_gz))
                 area_dt = float(size_y_detector*size_x_detector)
                 overlap = float(area_inter/area_gz)
-
-                print("start")
-                print(minx_gz)
-                print(minx_dt)
-                print(miny_gz)
-                print(miny_dt)
-                print(maxx_gz)
-                print(maxx_dt)
-                print(maxy_gz)
-                print(maxy_dt)
-                print("Common area:")
-                print(area_inter)
-                print("Area Gazebo:")
-                print(area_gz)
-                print("Area Detector:")
-                print(area_dt)
-                print("overlap:")
-                print(overlap)
-                print("end")
+                if (0.1<overlap ):
+                    print("start")
+                    print(minx_gz)
+                    print(minx_dt)
+                    print(miny_gz)
+                    print(miny_dt)
+                    print(maxx_gz)
+                    print(maxx_dt)
+                    print(maxy_gz)
+                    print(maxy_dt)
+                    print("Common area:")
+                    print(area_inter)
+                    print("Area Gazebo:")
+                    print(area_gz)
+                    print("Area Detector:")
+                    print(area_dt)
+                    print("overlap:")
+                    print(overlap)
+                    print("end")
+                else:
+                    print("#########fail#########")
             else:
                 print("##########################fail#####################################")
-                
+
 
 
 
