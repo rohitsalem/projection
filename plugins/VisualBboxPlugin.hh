@@ -36,6 +36,12 @@ namespace gazebo
 	/// \brief Private Data pointer
 	private: std::unique_ptr<VisualBboxPluginPrivate> dataPtr;
 
+	// For transformation matrices
+	private: ignition::math::Matrix4<double> Rx, Ry, Rz, T, RT;
+	private: float r, p, y; // roll pitch yaw
+	private: ignition::math::Vector3<double> pA_o , pB_o, pC_o, pD_o, pE_o, pF_o, pG_o, pH_o;
+	private: ignition::math::Vector3<double> pcenter_w, pA_w ;
+
 	};
 }
 

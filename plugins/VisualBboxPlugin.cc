@@ -60,6 +60,7 @@ VisualBboxPlugin::VisualBboxPlugin() : dataPtr(new VisualBboxPluginPrivate)
 	ros::init(argc, &argv, "VisualBboxPlugin");
 	this->dataPtr->nh = new ros::NodeHandle();
 	this->dataPtr->pub = this->dataPtr->nh->advertise<std_msgs::Float64MultiArray>("corners",1);
+
 }
 
 VisualBboxPlugin::~VisualBboxPlugin()
@@ -140,6 +141,35 @@ void VisualBboxPlugin::Update()
 	corners.data.push_back(rot.Roll());
 	corners.data.push_back(rot.Pitch());
 	corners.data.push_back(rot.Yaw());
+  r = rot.Roll();
+	p = rot.Pitch();
+	y = rot.Yaw();
+	pcenter_w.Set(pos.X(), pos.Y(), pos.Z());
+	Rx.Set(1, 0, 0, 0, 0, cos(r), -sin(-r), 0, 0, sin(-r), cos(r), 0, 0, 0, 0, 1);
+	Ry.Set(cos(p), 0, sin(p), 0, 0, 1, 0, 0, -sin(p), 0, cos(p), 0, 0, 0, 0, 1);
+	Rz.Set(cos(y), -sin(y), 0, 0, sin(y), cos(y), 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+	// T.Set(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, pos.X(), pos.Y(), pos.Z(), 1);
+	T.Set(1, 0, 0, pos.X(), 0, 1, 0, pos.Y(), 0, 0, 1, pos.Z(), 0, 0, 0, 1);
+
+	RT = ((Rx.operator*(Ry)).operator*(Rz)).operator*(T);
+	// std::cout << "VisualBboxPlugin  RT :" << RT << '\n';
+	// RT.Transpose();
+	// std::cout << "VisualBboxPlugin  RT Transpose :" << RT << '\n';
+
+	pA_o.Set(x_min, y_min, z_min);
+  pB_o.Set(-x_min, y_min, z_min);
+  pC_o.Set(-x_min, -y_min, z_min);
+  pD_o.Set(x_min, -y_min, z_min);
+  pE_o.Set(x_max, y_max, z_max);
+  pF_o.Set(-x_max, y_max, z_max);
+  pG_o.Set(-x_max, -y_max, z_max);
+  pH_o.Set(x_max, -y_max, z_max);
+ 	// transformation Not working rightnow so just writing the structure will pass local coordiantes as of now
+	pA_w = (RT.operator*(pA_o))/(pA_o.Dot(pcenter_w)+1);
+	// pA_w = (RT.operator*(pA_o));
+
+	std::cout << "VisualBboxPlugin :" << pA_w  <<'\n';
+
 
   this->dataPtr->pub.publish(corners);
 
