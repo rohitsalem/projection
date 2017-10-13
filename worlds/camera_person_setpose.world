@@ -114,8 +114,6 @@
             </clip>
           </camera>
           <plugin name= 'CameraBboxPlugin' filename='libCameraBboxPlugin.so'>
-          </plugin>
-          <plugin name='camera_controller' filename='libgazebo_ros_camera.so'>
             <always_on>true</always_on>
             <update_rate>30.0</update_rate>
             <cameraName>camera/rgb</cameraName>

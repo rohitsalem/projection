@@ -13,6 +13,8 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   vision_msgs
+  message_generation
+  gazebo_plugins
 )
 
 find_package(gazebo REQUIRED)
@@ -59,11 +61,10 @@ find_package(gazebo REQUIRED)
 # )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+ add_service_files(
+  FILES
+  AddTwo.srv
+ )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -73,10 +74,10 @@ find_package(gazebo REQUIRED)
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+ generate_messages(
+   DEPENDENCIES
+   std_msgs  # Or other packages containing msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -109,8 +110,9 @@ find_package(gazebo REQUIRED)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES projection
-   CATKIN_DEPENDS gazebo_ros
+   LIBRARIES 
+   gazebo_ros_camera_utils
+   CATKIN_DEPENDS gazebo_ros gazebo_plugins
 
 #  DEPENDS system_lib
 )
@@ -132,8 +134,8 @@ link_directories(${GAZEBO_LIBRARY_DIRS})
 add_library(VisualBboxPlugin SHARED plugins/VisualBboxPlugin.cc)
 target_link_libraries( VisualBboxPlugin ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES})
 
-add_library(CameraBboxPlugin SHARED plugins/CameraBboxPlugin.cc)
-target_link_libraries( CameraBboxPlugin ${GAZEBO_LIBRARIES} )
+add_library(CameraBboxPlugin plugins/CameraBboxPlugin.cc)
+target_link_libraries(   CameraBboxPlugin ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES} CameraPlugin)
 
 add_library(SetPosePlugin SHARED plugins/SetPosePlugin.cc)
 target_link_libraries( SetPosePlugin ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES})
@@ -186,11 +188,12 @@ catkin_install_python(PROGRAMS scripts/validate.py DESTINATION ${CATKIN_PACKAGE_
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_node
-#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+ install(TARGETS 
+	CameraBboxPlugin
+   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+   
+ )
 
 ## Mark cpp header files for installation
 # install(DIRECTORY include/${PROJECT_NAME}/
