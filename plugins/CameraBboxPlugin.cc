@@ -68,41 +68,8 @@ void CameraBboxPlugin::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
   this->camera_ = this->camera;
 
   GazeboRosCameraUtils::Load(_parent, _sdf);
-  this->connections.push_back(event::Events::ConnectPreRender(std::bind(&CameraBboxPlugin::Update, this)));
-//   if (!_sensor)
-//     gzerr << "Invalid sensor pointer.\n";
-//
-//   this->parentSensor =
-//     std::dynamic_pointer_cast<sensors::CameraSensor>(_sensor);
-//
-//   if (!this->parentSensor)
-//   {
-//     gzerr << "CameraBboxPlugin requires a CameraSensor.\n";
-//     if (std::dynamic_pointer_cast<sensors::DepthCameraSensor>(_sensor))
-//       gzmsg << "It is a depth camera sensor\n";
-//   }
-//
-//   this->camera = this->parentSensor->Camera();
-//
-//   if (!this->parentSensor)
-//   {
-//     gzerr << "CameraBboxPlugin not attached to a camera sensor\n";
-//     return;
-//   }
-//   this->width = this->camera->ImageWidth();
-//   this->height = this->camera->ImageHeight();
-//   this->depth = this->camera->ImageDepth();
-//   this->format = this->camera->ImageFormat();
-//
-// // std::cout << pixelsI << '\n' << this->camera->WorldPose() << std::endl;
-//   this->connections.push_back(event::Events::ConnectPreRender(std::bind(&CameraBboxPlugin::Update, this)));
-//
-//   this->newFrameConnection = this->camera->ConnectNewImageFrame(
-//       std::bind(&CameraBboxPlugin::OnNewFrame, this,
-//         std::placeholders::_1, std::placeholders::_2, std::placeholders::_3,
-//         std::placeholders::_4, std::placeholders::_5));
-//
-//   this->parentSensor->SetActive(true);
+  // this->connections.push_back(event::Events::ConnectPreRender(std::bind(&CameraBboxPlugin::Update, this)));
+
 }
 /////////////////////////////////////////////////
 void CameraBboxPlugin::OnNewFrame(const unsigned char *_image,
@@ -140,20 +107,7 @@ void CameraBboxPlugin::OnNewFrame(const unsigned char *_image,
       }
     }
   }
-}
-
-
-void CameraBboxPlugin::Callback(const std_msgs::Float64MultiArray::ConstPtr& msg)
-{
   std::lock_guard<std::mutex> lock(this->mutex);
-  d = msg->data;
-  this->dirty = true; // FLag to enable mutex
-
-}
-
-void CameraBboxPlugin::Update()
-{
-	std::lock_guard<std::mutex> lock(this->mutex);
   if (this->dirty)
   {
     ignition::math::Vector3d ptA, ptB, ptC, ptD, ptE, ptF, ptG , ptH;
@@ -191,7 +145,9 @@ void CameraBboxPlugin::Update()
     datay.push_back(pixelsG[1]);
     datax.push_back(pixelsH[0]);
     datay.push_back(pixelsH[1]);
-    pixels.header.stamp = ros::Time::now();
+    pixels.header.stamp.sec = sensor_update_time.sec;
+    pixels.header.stamp.nsec = sensor_update_time.nsec;
+
     pixels.quaternion.x = *std::min_element(datax.begin(),datax.end());  //min x
     pixels.quaternion.y = *std::max_element(datax.begin(),datax.end());  //max x
     pixels.quaternion.z = *std::min_element(datay.begin(),datay.end());  //min y
@@ -203,3 +159,17 @@ void CameraBboxPlugin::Update()
     this->dirty = false;
   }
 }
+
+
+void CameraBboxPlugin::Callback(const std_msgs::Float64MultiArray::ConstPtr& msg)
+{
+  std::lock_guard<std::mutex> lock(this->mutex);
+  d = msg->data;
+  this->dirty = true; // FLag to enable mutex
+
+}
+
+// void CameraBboxPlugin::Update()
+// {
+//
+// }
