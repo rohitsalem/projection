@@ -152,9 +152,7 @@ void CameraBboxPlugin::OnNewFrame(const unsigned char *_image,
     pixels.quaternion.y = *std::max_element(datax.begin(),datax.end());  //max x
     pixels.quaternion.z = *std::min_element(datay.begin(),datay.end());  //min y
     pixels.quaternion.w = *std::max_element(datay.begin(),datay.end());  //max y
-    // std::cout << *std::min_element(datax.begin(),datax.end())<<'\n';
-    // std::cout << "x" << minx << maxx <<'\n';
-
+    
     this->pub.publish(pixels);
     this->dirty = false;
   }
