@@ -60,6 +60,7 @@ VisualBboxPlugin::VisualBboxPlugin() : dataPtr(new VisualBboxPluginPrivate)
 	ros::init(argc, &argv, "VisualBboxPlugin");
 	this->dataPtr->nh = new ros::NodeHandle();
 	this->dataPtr->pub = this->dataPtr->nh->advertise<std_msgs::Float64MultiArray>("corners",1);
+
 }
 
 VisualBboxPlugin::~VisualBboxPlugin()
@@ -140,7 +141,7 @@ void VisualBboxPlugin::Update()
 	corners.data.push_back(rot.Roll());
 	corners.data.push_back(rot.Pitch());
 	corners.data.push_back(rot.Yaw());
-
+  
   this->dataPtr->pub.publish(corners);
 
 }

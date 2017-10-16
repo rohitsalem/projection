@@ -7,7 +7,7 @@ import random
 def talker():
     pub = rospy.Publisher("SetObjectPose", Pose, queue_size=1)
     rospy.init_node('setPose',anonymous = True)
-    rate = rospy.Rate(1)
+    rate = rospy.Rate(5)
     pose = Pose()
     while not rospy.is_shutdown():
         pose.position.x = random.uniform(3.5,8.5)
