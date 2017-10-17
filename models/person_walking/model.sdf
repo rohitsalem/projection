@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <sdf version="1.5">
   <model name="person_walking">
+    <plugin name='SetPosePlugin' filename='libSetPosePlugin.so'/>
     <link name="link">
       <inertial>
         <pose>0 0 0.95 0 0 0</pose>
@@ -41,6 +42,7 @@
           </mesh>
         </geometry>
         <plugin name='VisualBboxPlugin' filename='libVisualBboxPlugin.so'/>
+
       </visual>
     </link>
   </model>
