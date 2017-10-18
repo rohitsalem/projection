@@ -5,7 +5,9 @@ import sys
 import random
 
 def talker():
-    pub = rospy.Publisher("SetObjectPose", Pose, queue_size=1)
+    model_name = "person_walking"
+    topic_name = model_name + "/" + "SetObjectPose"
+    pub = rospy.Publisher(topic_name, Pose, queue_size=1)
     rospy.init_node('setPose',anonymous = True)
     rate = rospy.Rate(5)
     pose = Pose()

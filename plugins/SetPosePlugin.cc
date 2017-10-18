@@ -7,7 +7,6 @@ GZ_REGISTER_MODEL_PLUGIN(SetPosePlugin);
 //Constructor
 SetPosePlugin::SetPosePlugin():ModelPlugin()
 {
-  pose_sub = nh.subscribe("SetObjectPose",1 , &SetPosePlugin::Callback, this);
 
 }
 
@@ -20,6 +19,9 @@ void SetPosePlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr /*_sdf*/)
 {
   // store the pointer to the model
   this->model = _parent;
+  std::string model_name = this->model->GetName();
+  std::string topic_name = model_name + "/" + "SetObjectPose";
+  pose_sub = nh.subscribe(topic_name,1 , &SetPosePlugin::Callback, this);
 
   //Listen to the update event
   this->updateConnection = event::Events::ConnectWorldUpdateBegin(
