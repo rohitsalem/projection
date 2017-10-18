@@ -7,8 +7,8 @@ GZ_REGISTER_MODEL_PLUGIN(GetPosePlugin);
 //Constructor
 GetPosePlugin::GetPosePlugin():ModelPlugin()
 {
-    
-  	pose_pub = nh.advertise<std_msgs::Float64MultiArray>("getpose",1);
+
+
 
 }
 
@@ -21,7 +21,9 @@ void GetPosePlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr /*_sdf*/)
 {
   // store the pointer to the model
   this->model = _parent;
-
+  std::string model_name = this->model->GetName();
+  std::string topic_name = model_name + "/" + "getPose" ;
+  pose_pub = nh.advertise<std_msgs::Float64MultiArray>(topic_name,1);
   //Listen to the update event
   this->updateConnection = event::Events::ConnectWorldUpdateBegin(
     boost::bind(&GetPosePlugin::Update, this));

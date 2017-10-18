@@ -230,6 +230,7 @@
       <pose frame=''>5.75258 0.179604 0 0 -0 0</pose>
       <static>1</static>
       <plugin name='SetPosePlugin' filename='libSetPosePlugin.so'/>
+      <plugin name='GetPosePlugin' filename='libGetPosePlugin.so'/>
     </model>
     <state world_name='default'>
       <sim_time>97 672000000</sim_time>
