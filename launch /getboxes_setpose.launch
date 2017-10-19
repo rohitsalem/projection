@@ -7,6 +7,6 @@
   </include>
   <node name = "perspectiveProjectionNode" pkg = "projection" type ="perspectiveProjectionNode" output ="screen"/>
   <node name = "showBoundingBox" type = "showBoundingBox.py" pkg = "projection" output = "screen"/>
-  <!-- <node name = "setPose" type = "setPose.py" pkg = "projection" output = "screen"/> -->
+  <node name = "setPose" type = "setPose.py" pkg = "projection" output = "screen"/> 
   <node pkg = "rviz" type = "rviz" name = "rviz" output ="screen"/>
 </launch>
