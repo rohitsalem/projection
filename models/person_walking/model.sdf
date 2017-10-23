@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <sdf version="1.5">
   <model name="person_walking">
+    <static>1</static>
     <plugin name='SetPosePlugin' filename='libSetPosePlugin.so'/>
     <link name="link">
       <inertial>
@@ -45,5 +46,6 @@
 
       </visual>
     </link>
+    <!-- <static>1</static> -->
   </model>
 </sdf>
