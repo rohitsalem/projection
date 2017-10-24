@@ -13,7 +13,7 @@ class ShowBoundingBox:
   def __init__(self):
     self.image_pub = rospy.Publisher("/ShowBoundingBox/image_raw",Image,queue_size =1 )
     self.bridge = CvBridge()
-    self.image_sub = message_filters.Subscriber("/camera/rgb/image_raw",Image)
+    self.image_sub = message_filters.Subscriber("/prius/front_camera/image_raw",Image)
     self.filtered_image_pub = rospy.Publisher("ShowBoundingBox/filtered/image", Image, queue_size =1)
     self.pixel_sub = message_filters.Subscriber("/pixels", QuaternionStamped)
     self.filtered_pixel_pub = rospy.Publisher("ShowBoundingBox/filtered/pixels", QuaternionStamped, queue_size =1)

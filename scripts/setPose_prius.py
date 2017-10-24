@@ -1,12 +1,15 @@
 #!/usr/bin/env python
-import rospy
-from geometry_msgs.msg import Pose
+import os
 import sys
-import random
 import csv
+import rospy
+import random
 import numpy as np
+from geometry_msgs.msg import Pose
 
-with open('waypoints.csv', 'rb') as f:
+csv_path = os.path.join(os.path.dirname(sys.path[0]),'data')
+csv_file = os.path.join(csv_path, 'waypoints.csv')
+with open(csv_file, 'rb') as f:
     reader = csv.reader(f)
     x = []
     y = []
