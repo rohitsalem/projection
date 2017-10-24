@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <launch>
+  <arg name="rvizconfig" default="$(find projection)/rviz/getboxes.rviz" />
   <include file = "$(find gazebo_ros)/launch/empty_world.launch">
     <arg name = "verbose" value = "true"/>
     <arg name = "gui" value = "true"/>
     <arg name = "world_name" value = "$(find projection)/worlds/camera_person.world"/>
   </include>
   <node name = "perspectiveProjectionNode" pkg = "projection" type ="perspectiveProjectionNode" output ="screen"/>
-  <node name = "showBoundingBox" type = "showBoundingBox.py" pkg = "projection" output= "screen"/>
-  <node pkg = "rviz" type = "rviz" name = "rviz" output ="screen"/>
+  <node name = "showBoundingBox" type = "showBoundingBox.py" pkg = "projection" output = "screen">
+    <remap from='image' to='/camera/rgb/image_raw'/>
+  </node>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
 </launch>
