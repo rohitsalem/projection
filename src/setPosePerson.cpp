@@ -73,7 +73,9 @@ public:
     if (i%100 ==0)
     {
      x = setPosePerson::Rand(4.5,15.5);
-     y = setPosePerson::Rand(-2.0,2.0);
+     y = setPosePerson::Rand(-3.0,3.0);
+     roll = setPosePerson::Rand(-0.2,0.2);
+     pitch = setPosePerson::Rand(-0.2,0.2);
      yaw = setPosePerson::Rand(-3.14,3.14);
 
 }
@@ -85,8 +87,8 @@ public:
     pose.position.x = po_w[0];
     pose.position.y = po_w[1];
     pose.position.z = po_w[2];
-    pose.orientation.x = po_w[3];
-    pose.orientation.y = po_w[4];
+    pose.orientation.x = roll;
+    pose.orientation.y = pitch;
     pose.orientation.z = yaw;
     pub.publish(pose);
 
@@ -97,7 +99,7 @@ private:
   ros::NodeHandle nh;
   ros::Subscriber sub;
   ros::Publisher pub;
-  double x,y,z,yaw;
+  double x,y,z,roll,pitch,yaw;
   int i =0;
 };
 int main (int argc, char **argv)
