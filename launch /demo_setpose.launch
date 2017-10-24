@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="model" default="$(find prius_description)/urdf/prius.urdf"/>
+  <arg name="rvizconfig" default="$(find projection)/rviz/car_demo.rviz" />
+
+  <param name="robot_description" textfile="$(arg model)"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="verbose" value="true"/>
+    <!-- <arg name="paused" value="true"/> -->
+    <!-- <arg name="world_name" value="$(find projection)/worlds/raceway.world"/> -->
+
+    <arg name="world_name" value="$(find projection)/worlds/mcity.world"/>
+
+  </include>
+
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" >
+    <!-- <remap from="robot_description" to="different_robot_description" /> -->
+    <!-- <remap from="joint_states" to="/prius/joint_states" /> -->
+  </node>
+  <node pkg="fake_localization" type="fake_localization" name="fake_localization">
+    <!-- <remap from="base_pose_ground_truth" to="/prius/base_pose_ground_truth"/> -->
+  </node>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="very_inaccurate_odom" args="0 0 0 0 0 0 odom base_link"/>
+  <node pkg="car_demo" type="joystick_translator" name="joystick_translator"/>
+
+  <!-- Run two joy nodes publishing to the same topic, just to cover two possible joystick locations -->
+  <!-- <node pkg="joy" type="joy_node" name="joy_node1">
+    <param name="dev" value="/dev/input/js1"/>
+  </node> -->
+  <node pkg="joy" type="joy_node" name="joy_node2">
+    <param name="dev" value="/dev/input/js0"/>
+  </node>
+
+
+  <!-- <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -x 94.38 -y -309.710 -z 7.5 -R 0 -P 0 -Y 1.579425 -model prius"/> -->
+
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -x -189.104  -y -341.7725 -z 0.03 -R 0 -P 0 -Y 1.57 -model prius"/>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+
+  <node pkg = "projection" name="perspectiveProjectionNode" type = "perspectiveProjectionNode"/>
+  <node pkg = "projection" name="showBoundingBox" type ="showBoundingBox.py">
+    <remap from = 'image' to ='/prius/front_camera/image_raw'/>
+  </node>
+  <node pkg = "projection" name="setPosePersonNode" type ="setPosePersonNode"/>
+  <node pkg = "projection" name="setPose_prius" type ="setPose_prius.py"/>
+  <node pkg= "tensorflow_object_detector" name="detect_ros" type="detect_ros.py"  output="screen">
+    <remap from='image' to='/prius/front_camera/image_raw'/>
+	</node>
+</launch>
