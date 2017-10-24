@@ -39,7 +39,9 @@
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
 
   <node pkg = "projection" name="perspectiveProjectionNode" type = "perspectiveProjectionNode"/>
-  <node pkg = "projection" name="showBoundingBox" type ="showBoundingBox.py"/>
+  <node pkg = "projection" name="showBoundingBox" type ="showBoundingBox.py">
+    <remap from = 'image' to ='/prius/front_camera/image_raw'/>
+  </node>
   <node pkg = "projection" name="setPosePersonNode" type ="setPosePersonNode"/>
   <node pkg= "tensorflow_object_detector" name="detect_ros" type="detect_ros.py"  output="screen">
     <remap from='image' to='/prius/front_camera/image_raw'/>

@@ -70,7 +70,7 @@ public:
   }
 
     // Origin of the object with respect to reference frame
-    if (i%100 ==0)
+    if (i%300 ==0)
     {
      x = setPosePerson::Rand(4.5,15.5);
      y = setPosePerson::Rand(-3.0,3.0);
