@@ -1,0 +1,87 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="default">
+
+    <gui fullscreen='0'>
+      <plugin name='keyboard' filename='libKeyboardGUIPlugin.so'/>
+      <camera name="user_camera">
+        <pose>107.81 -341.80 20 0 0.332 2.030003</pose>
+      </camera>
+    </gui>
+
+    <scene>
+      <sky></sky>
+    </scene>
+
+    <!-- A global light source -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <!-- A ground plane -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <include>
+      <uri>model://raceway</uri>
+      <pose>25.5593 -2.5 0 0 0 -0.89187</pose>
+    </include>
+    <model name="person_walking">
+      <static>1</static>
+      <plugin name='SetPosePlugin' filename='libSetPosePlugin.so'/>
+      <link name="link">
+        <inertial>
+          <pose>0 0 0.95 0 0 0</pose>
+          <mass>80.0</mass>
+          <inertia>
+            <ixx>27.82</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>24.88</iyy>
+            <iyz>0</iyz>
+            <izz>4.57</izz>
+          </inertia>
+        </inertial>
+
+        <collision name="bottom">
+          <pose>0 0 0.01 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>0.35 0.75 0.02</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <collision name="person">
+          <pose>0 0 -0.02 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <uri>model://person_walking/meshes/walking.dae</uri>
+            </mesh>
+          </geometry>
+        </collision>
+
+        <visual name="visual">
+          <pose>0 0 -0.02 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <uri>model://person_walking/meshes/walking.dae</uri>
+            </mesh>
+          </geometry>
+          <plugin name='VisualBboxPlugin' filename='libVisualBboxPlugin.so'/>
+        </visual>
+      </link>
+    </model>
+    <model name='person_walking'>
+      <pose frame=''>94.16 -302.07 7.715 0 0 0</pose>
+      <scale>1 1 1</scale>
+      <link name='link'>
+        <pose frame=''>94.16 -302.07 7.715 0 0 0</pose>
+        <velocity>0 0 0 0 -0 0</velocity>
+        <acceleration>0 0 0 0 -0 0</acceleration>
+        <wrench>0 0 0 0 -0 0</wrench>
+      </link>
+    </model>
+
+  </world>
+</sdf>
