@@ -9,9 +9,10 @@ Requirement: ROS Kinetic, Gazebo-8, gazebo_ros and ROS message_filter packages.
 [gif3]: ./screenshots-bbox/demo.gif
 [gif4]: ./screenshots-bbox/demo_setpose.gif
 
-**To check out the basic version**, like the one in the gif below, RUN `roslaunch projection getbox.launch`
-
+**To check out the basic version**, like the one in the gif below,
 ![alt text][gif1]
+* Place this packge in your workspace's src folder, then RUN `catkin_make`
+*  RUN `roslaunch projection getbox.launch`
 
 This will open Rviz and Gazebo, 
 * The Image with the 2D bounding box can be found on ros topic `/ShowBoundingBox/image_raw `
@@ -29,7 +30,7 @@ Like this:
 ![alt text][gif3]
 
 * Make sure that you have tensorflow installed, for tensoflow installation check [here](https://www.tensorflow.org/install/install_linux).
-* Get the ROS packages [car_demo](https://github.com/rohitsalem/car_demo) and [tensorflow_object_detector](https://github.com/osrf/tensorflow_object_detector) and place them in your workspace, then run `catkin_make`.
+* Get the ROS packages [car_demo](https://github.com/rohitsalem/car_demo) and [tensorflow_object_detector](https://github.com/osrf/tensorflow_object_detector), [vision_msgs](https://github.com/rohitsalem/vision_msgs) and along with this package place them in your workspace, then run `catkin_make`.
 * RUN `roslaunch projection demo.launch`, this will launch the mcity world with prius car and a person (object) by default and you can move the car using your joystick or `WASD` on your keyboard, The person model will move randomly along with the car. 
 * To get the accuracy score of the tensorflow detection, RUN `rosrun projection validate.py`.
 
