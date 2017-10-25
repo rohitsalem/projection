@@ -1,8 +1,25 @@
 # projection
 
-**Package for Auto generation of Bounding boxes in Gazebo for gazebo Models**
-Requirement: ROS Kinetic, Gazebo-8, gazebo_ros and ROS message_filter packages.
+## Package for Auto generation of Bounding boxes in Gazebo for gazebo Models
 
+**Requirement:**  ROS Kinetic, Gazebo-8, and ROS packages: gazebo_ros, message_filter.
+
+**Recommended ROS Packages:** 
+* [car_demo](https://github.com/rohitsalem/car_demo) 
+* [tensorflow_object_detector](https://github.com/osrf/tensorflow_object_detector)
+* [vision_msgs](https://github.com/rohitsalem/vision_msgs)
+## If Using Docker: 
+**Requirements:** 
+* An X server
+* [Docker](https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/) 
+* [Nvidia-Docker](https://github.com/NVIDIA/nvidia-docker)
+* Place this package and the above recommended packages (if you want to ckeck out the validation example with tensorflow_detector) in `workspace/src` folder on your local machine.
+* Replace the `WORKSPACE` variable in `docker/run_demo.bash` to point to your workspace in your local machine.  
+* Then, RUN:
+```
+cd projection/docker
+bash run_demo.bash
+```
 [//]: # (Image References)
 [gif1]: ./screenshots-bbox/getbox.gif
 [gif2]: ./screenshots-bbox/getbox_setpose.gif
@@ -11,8 +28,9 @@ Requirement: ROS Kinetic, Gazebo-8, gazebo_ros and ROS message_filter packages.
 
 **To check out the basic version**, like the one in the gif below,
 ![alt text][gif1]
-* Place this packge in your workspace's src folder, then RUN `catkin_make`
-*  RUN `roslaunch projection getbox.launch`
+* Place this packge in your workspace's src folder (Ignore this step if you followed previous steps for using docker).
+* RUN `catkin_make`.
+* RUN `roslaunch projection getbox.launch`.
 
 This will open Rviz and Gazebo, 
 * The Image with the 2D bounding box can be found on ros topic `/ShowBoundingBox/image_raw `
@@ -30,7 +48,8 @@ Like this:
 ![alt text][gif3]
 
 * Make sure that you have tensorflow installed, for tensoflow installation check [here](https://www.tensorflow.org/install/install_linux).
-* Get the ROS packages [car_demo](https://github.com/rohitsalem/car_demo) and [tensorflow_object_detector](https://github.com/osrf/tensorflow_object_detector), [vision_msgs](https://github.com/rohitsalem/vision_msgs) and along with this package place them in your workspace, then run `catkin_make`.
+* Get all of recommended the recommended ROS packages along with this package and place them in your workspace. (Ignore this step if you followed previous steps for using docker). 
+* RUN `catkin_make`.
 * RUN `roslaunch projection demo.launch`, this will launch the mcity world with prius car and a person (object) by default and you can move the car using your joystick or `WASD` on your keyboard, The person model will move randomly along with the car. 
 * To get the accuracy score of the tensorflow detection, RUN `rosrun projection validate.py`.
 
