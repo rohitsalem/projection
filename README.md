@@ -33,7 +33,7 @@ Like this:
 * RUN `roslaunch projection demo.launch`, this will launch the mcity world with prius car and a person (object) by default and you can move the car using your joystick or `WASD` on your keyboard, The person model will move randomly along with the car. 
 * To get the accuracy score of the tensorflow detection, RUN `rosrun projection validate.py`.
 
-** To set the prius to follow a predifined path ** like this:
+**To set the prius to follow a predifined path** like this:
 ![alt text][gif4]
 
 * RUN : `roslaunch projection demo_setpose.launch`, this will also run `setPose_prius.py` node to set pose of the prius according to the poses in the csv [file](./data/waypoints.csv).
