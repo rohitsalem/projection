@@ -2,13 +2,18 @@
 
 ## Package for Auto generation of Bounding boxes in Gazebo for gazebo Models
 
-**Requirement:**  ROS Kinetic, Gazebo-8, and ROS packages: gazebo_ros, message_filter.
+**Requirement:**  ROS Kinetic, Gazebo-8, and
+  ROS packages:
+* gazebo_ros 
+* message_filter
+* [vision_msgs](https://github.com/rohitsalem/vision_msgs)
 
 **Recommended ROS Packages:** 
 * [car_demo](https://github.com/rohitsalem/car_demo) 
 * [tensorflow_object_detector](https://github.com/osrf/tensorflow_object_detector)
-* [vision_msgs](https://github.com/rohitsalem/vision_msgs)
-## If Using Docker: 
+* [yolo_object_detector](https://github.com/osrf/yolo_object_detector)
+
+## If Using Docker (RECOMMENDED): 
 **Requirements:** 
 * An X server
 * [Docker](https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/) 
