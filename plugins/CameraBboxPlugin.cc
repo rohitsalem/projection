@@ -36,7 +36,7 @@ CameraBboxPlugin::CameraBboxPlugin()
 // : SensorPlugin(), width(0), height(0), depth(0)
 {
   sub = nh.subscribe("objectBoxWorldCoordinates",1 , &CameraBboxPlugin::Callback , this);
-  pub = nh.advertise<geometry_msgs::QuaternionStamped>("pixels",1);
+  pub = nh.advertise<vision_msgs::Detection2D>("bounding_box",1);
 }
 
 
@@ -145,19 +145,23 @@ void CameraBboxPlugin::OnNewFrame(const unsigned char *_image,
     datay.push_back(pixelsG[1]);
     datax.push_back(pixelsH[0]);
     datay.push_back(pixelsH[1]);
-    pixels.header.stamp.sec = sensor_update_time.sec;
-    pixels.header.stamp.nsec = sensor_update_time.nsec;
 
-    pixels.quaternion.x = *std::min_element(datax.begin(),datax.end());  //min x
-    pixels.quaternion.y = *std::max_element(datax.begin(),datax.end());  //max x
-    pixels.quaternion.z = *std::min_element(datay.begin(),datay.end());  //min y
-    pixels.quaternion.w = *std::max_element(datay.begin(),datay.end());  //max y
-    
-    this->pub.publish(pixels);
+    auto minx = *std::min_element(datax.begin(),datax.end());  //min x
+    auto maxx = *std::max_element(datax.begin(),datax.end());  //max x
+    auto miny = *std::min_element(datay.begin(),datay.end());  //min y
+    auto maxy = *std::max_element(datay.begin(),datay.end());  //max y
+
+    box.header.stamp.sec = sensor_update_time.sec;
+    box.header.stamp.nsec = sensor_update_time.nsec;
+    box.bbox.center.x = int((minx + maxx)/2);
+    box.bbox.center.y = int((miny + maxy)/2);
+    box.bbox.size_x = maxx - minx;
+    box.bbox.size_y = maxy - miny;
+
+    this->pub.publish(box);
     this->dirty = false;
   }
 }
-
 
 void CameraBboxPlugin::Callback(const std_msgs::Float64MultiArray::ConstPtr& msg)
 {
@@ -166,8 +170,3 @@ void CameraBboxPlugin::Callback(const std_msgs::Float64MultiArray::ConstPtr& msg
   this->dirty = true; // FLag to enable mutex
 
 }
-
-// void CameraBboxPlugin::Update()
-// {
-//
-// }

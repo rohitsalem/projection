@@ -1,11 +1,11 @@
 #!/usr/bin/env python
+import sys
 import cv2
 import rospy
 import message_filters
 from sensor_msgs.msg import Image
-from geometry_msgs.msg import QuaternionStamped
+from vision_msgs.msg import Detection2D
 from cv_bridge import CvBridge, CvBridgeError
-import sys
 
 
 class ShowBoundingBox:
@@ -15,25 +15,30 @@ class ShowBoundingBox:
     self.bridge = CvBridge()
     self.image_sub = message_filters.Subscriber("image",Image)
     self.filtered_image_pub = rospy.Publisher("ShowBoundingBox/filtered/image", Image, queue_size =1)
-    self.pixel_sub = message_filters.Subscriber("/pixels", QuaternionStamped)
-    self.filtered_pixel_pub = rospy.Publisher("ShowBoundingBox/filtered/pixels", QuaternionStamped, queue_size =1)
-    self.ts = message_filters.TimeSynchronizer([self.image_sub,self.pixel_sub],10)
+    self.box_sub = message_filters.Subscriber("/bounding_box", Detection2D)
+    self.filtered_box_pub = rospy.Publisher("ShowBoundingBox/filtered/bounding_box", Detection2D, queue_size =1)
+    self.ts = message_filters.TimeSynchronizer([self.image_sub,self.box_sub],10)
     self.ts.registerCallback(self.callback)
 
-  def callback(self,image,pixels):
+  def callback(self,image,box):
     try:
       cv_image = self.bridge.imgmsg_to_cv2(image, "bgr8")
     except CvBridgeError as e:
       print(e)
-    minx = int(pixels.quaternion.x)
-    maxx = int(pixels.quaternion.y)
-    miny = int(pixels.quaternion.z)
-    maxy = int(pixels.quaternion.w)
+    center_x = box.bbox.center.x
+    center_y = box.bbox.center.y
+    size_x = box.bbox.size_x
+    size_y = box.bbox.size_y
+
+    minx = int(center_x - size_x/2)
+    maxx = int(center_x + size_x/2)
+    miny = int(center_y - size_y/2)
+    maxy = int(center_y + size_y/2)
     cv_image = cv2.rectangle(cv_image,(minx,miny),(maxx,maxy),(0,0,0),2)
     try:
       self.image_pub.publish(self.bridge.cv2_to_imgmsg(cv_image, "bgr8"))
       self.filtered_image_pub.publish(image)
-      self.filtered_pixel_pub.publish(pixels)
+      self.filtered_box_pub.publish(box)
     except CvBridgeError as e:
       print(e)
 

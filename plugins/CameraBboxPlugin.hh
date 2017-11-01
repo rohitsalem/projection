@@ -27,7 +27,7 @@
 #include "gazebo/common/Events.hh"
 #include "ros/ros.h"
 #include "std_msgs/Float64MultiArray.h"
-#include "geometry_msgs/QuaternionStamped.h"
+#include "vision_msgs/Detection2D.h"
 
 #include <gazebo/plugins/CameraPlugin.hh>
 #include <gazebo_plugins/gazebo_ros_camera_utils.h>
@@ -65,7 +65,7 @@ namespace gazebo
     public: ros::Subscriber sub;
     public: std::vector<int> datax;
     public: std::vector<int> datay;
-    public: geometry_msgs::QuaternionStamped pixels;
+    public: vision_msgs::Detection2D box;
 
   };
 }
