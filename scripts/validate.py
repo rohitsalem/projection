@@ -43,47 +43,48 @@ class validate:
         if len(dt_box.detections) !=0 :
             c=0 # flag to check the detection of person
             for detection in dt_box.detections:
-                object_id = detection.results[0].id
-                score = detection.results[0].score
-                if (object_id == 1): # object id for person is 1
-                    c=1
-                    center_x_detector = detection.bbox.center.x
-                    # center y
-                    center_y_detector = detection.bbox.center.y
-                    # size x
-                    size_x_detector = detection.bbox.size_x
+                if c==0: # to reduce the multiple detection of the same person
+                    object_id = detection.results[0].id
+                    score = detection.results[0].score
+                    if (object_id == 1): # object id for person is 1
+                        c=1
+                        center_x_detector = detection.bbox.center.x
+                        # center y
+                        center_y_detector = detection.bbox.center.y
+                        # size x
+                        size_x_detector = detection.bbox.size_x
 
-                    size_y_detector = detection.bbox.size_y
+                        size_y_detector = detection.bbox.size_y
 
-                    minx_dt = int(center_x_detector - size_x_detector/2)
-                    maxx_dt = int(center_x_detector + size_x_detector/2)
-                    miny_dt = int(center_y_detector - size_y_detector/2)
-                    maxy_dt = int(center_y_detector + size_y_detector/2)
-                    area_inter = float(max(0,(min(maxx_gz,maxx_dt)-max(minx_gz,minx_dt)))*max(0,(min(maxy_gz,maxy_dt)-max(miny_gz,miny_dt))))
-                    area_dt = float(size_y_detector*size_x_detector)
-                    area_gz = float((maxx_gz-minx_gz)*(maxy_gz-miny_gz))
-                    overlap = float(area_inter/area_gz)
-                    print(minx_gz , miny_gz)
-                    # print(miny_gz)
-                    print(minx_dt , miny_dt)
-                    # print(miny_dt)
-                    print(maxx_gz , maxy_gz)
-                    # print(maxy_gz)
-                    print(maxx_dt , maxy_dt)
-                    # print(maxy_dt)
-                    print("Common area:")
-                    print(area_inter)
-                    print("Area Gazebo:")
-                    print(area_gz)
-                    print("Area Detector:")
-                    print(area_dt)
-                    print("overlap:")
-                    print(overlap)
-                    if(overlap < 0.3):
-                        print("################# Failed overlap ###############")
-                        self.fail_overlap += 1
-                    else:
-                        self.correct += 1
+                        minx_dt = int(center_x_detector - size_x_detector/2)
+                        maxx_dt = int(center_x_detector + size_x_detector/2)
+                        miny_dt = int(center_y_detector - size_y_detector/2)
+                        maxy_dt = int(center_y_detector + size_y_detector/2)
+                        area_inter = float(max(0,(min(maxx_gz,maxx_dt)-max(minx_gz,minx_dt)))*max(0,(min(maxy_gz,maxy_dt)-max(miny_gz,miny_dt))))
+                        area_dt = float(size_y_detector*size_x_detector)
+                        area_gz = float((maxx_gz-minx_gz)*(maxy_gz-miny_gz))
+                        overlap = float(area_inter/area_gz)
+                        print(minx_gz , miny_gz)
+                        # print(miny_gz)
+                        print(minx_dt , miny_dt)
+                        # print(miny_dt)
+                        print(maxx_gz , maxy_gz)
+                        # print(maxy_gz)
+                        print(maxx_dt , maxy_dt)
+                        # print(maxy_dt)
+                        print("Common area:")
+                        print(area_inter)
+                        print("Area Gazebo:")
+                        print(area_gz)
+                        print("Area Detector:")
+                        print(area_dt)
+                        print("overlap:")
+                        print(overlap)
+                        if(overlap < 0.3):
+                            print("################# Failed overlap ###############")
+                            self.fail_overlap += 1
+                        else:
+                            self.correct += 1
             if (c==0):
                 print('####################### Wrong Detection #################### , object_id: %d' %object_id)
                 overlap = -1 ## for Wrong detection
