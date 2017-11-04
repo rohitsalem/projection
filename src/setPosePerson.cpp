@@ -70,10 +70,10 @@ public:
   }
 
     // Origin of the object with respect to reference frame
-    if (i%300 ==0)
+    if (i%100 ==0)
     {
-     x = setPosePerson::Rand(4.5,15.5);
-     y = setPosePerson::Rand(-3.0,3.0);
+     x = setPosePerson::Rand(7.5,15.5);
+     y = setPosePerson::Rand(-2.0,2.0);
      roll = setPosePerson::Rand(-0.2,0.2);
      pitch = setPosePerson::Rand(-0.2,0.2);
      yaw = setPosePerson::Rand(-3.14,3.14);
