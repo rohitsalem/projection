@@ -65,8 +65,9 @@ def main():
     #set rospack
     rospack = rospkg.RosPack()
     #get package
-    data_dir = os.path.join(rospack.get_path('projection'), "data")
-    rosbag_file = os.path.join(data_dir,  "dataset.bag")
+    bag_dir = os.path.join(rospack.get_path('projection'), "bag_files")
+    data_dir = os.path.join(rospack.get_path('projection'), "datasets")
+    rosbag_file = os.path.join(bag_dir,  "dataset.bag")
 
     bridge = CvBridge()
 
@@ -82,13 +83,13 @@ def main():
     filter_topics = [BBOX_TOPIC , CAMERA_TOPICS]
 
 
-    bagsets = find_bagsets(data_dir, filter_topics=filter_topics)
+    bagsets = find_bagsets(bag_dir, filter_topics=filter_topics)
     for bs in bagsets:
         print("Processing set %s" % bs.name)
         sys.stdout.flush()
 
         dataset_outdir = os.path.join(data_dir, "%s" % bs.name)
-        images_outdir = get_outdir(data_dir, "Images")
+        images_outdir = get_outdir(data_dir, "images")
         csv_outdir = get_outdir(data_dir, "csv_files")
 
         camera_cols = ["timestamp", "images"]
