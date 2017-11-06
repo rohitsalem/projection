@@ -66,7 +66,7 @@ def main():
     rospack = rospkg.RosPack()
     #get package
     bag_dir = os.path.join(rospack.get_path('projection'), "bag_files")
-    data_dir = os.path.join(rospack.get_path('projection'), "datasets")
+    data_dir = os.path.join(rospack.get_path('tensorflow_object_detector'), "datasets")
     rosbag_file = os.path.join(bag_dir,  "dataset.bag")
 
     bridge = CvBridge()
