@@ -3,7 +3,7 @@ import cv2
 import rospy
 import message_filters
 from sensor_msgs.msg import Image
-from geometry_msgs.msg import QuaternionStamped
+from vision_msgs.msg import Detection2D
 from vision_msgs.msg import Detection2DArray
 from std_msgs.msg import Float32
 from std_msgs.msg import Int32
@@ -14,10 +14,10 @@ class validate:
     def __init__(self):
         print("init_node")
 
-        # subscriber to subcribe pixel values of the 2d bbox from the gazebo plugin
-        self.bbox_gazbeo_sub = message_filters.Subscriber("/ShowBoundingBox/filtered/pixels", QuaternionStamped)
+        # subscriber to subcribe bounding_box coordinates values of the 2d bbox from the gazebo plugin
+        self.bbox_gazbeo_sub = message_filters.Subscriber("/ShowBoundingBox/filtered/bounding_box", Detection2D)
 
-        # subscriber to subcribe pixel values of the 2d bbox from the object detector
+        # subscriber to subcribe bounding_box coordinates values of the 2d bbox from the object detector
         self.bbox_detector_sub = message_filters.Subscriber("/objects", Detection2DArray)
 
         self.overlap_pub = rospy.Publisher("/validate/overlap_area", Float32, queue_size = 1)
@@ -33,10 +33,15 @@ class validate:
     def callback(self,gz_box, dt_box):
         self.total += 1
         # gazebo box max and min corners in 2d
-        minx_gz = int(gz_box.quaternion.x)
-        maxx_gz = int(gz_box.quaternion.y)
-        miny_gz = int(gz_box.quaternion.z)
-        maxy_gz = int(gz_box.quaternion.w)
+
+        center_x_gz = gz_box.bbox.center.x
+        center_y_gz = gz_box.bbox.center.y
+        size_x_gz = gz_box.bbox.size_x
+        size_y_gz = gz_box.bbox.size_y
+        minx_gz = int(center_x_gz - size_x_gz/2)
+        maxx_gz = int(center_x_gz + size_x_gz/2)
+        miny_gz = int(center_y_gz - size_y_gz/2)
+        maxy_gz = int(center_y_gz + size_y_gz/2 )
         area_inter = 0
         area_dt = 0
         # detector stuff taking only single result
@@ -80,7 +85,7 @@ class validate:
                         print(area_dt)
                         print("overlap:")
                         print(overlap)
-                        if(overlap < 0.3):
+                        if(overlap < 0.4):
                             print("################# Failed overlap ###############")
                             self.fail_overlap += 1
                         else:
