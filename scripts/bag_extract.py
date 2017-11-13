@@ -51,7 +51,7 @@ def write_image(bridge, outdir, msg, fmt='JEPG'):
 
 def camera2dict(msg, write_results, camera_dict):
     camera_dict["timestamp"].append(msg.header.stamp.to_nsec())
-    camera_dict["images"].append(write_results['filename'])
+    camera_dict["filename"].append(write_results['filename'])
 
 
 def bbox2dict(msg, bbox_dict):
@@ -60,6 +60,15 @@ def bbox2dict(msg, bbox_dict):
     bbox_dict["center_y"].append(msg.bbox.center.y)
     bbox_dict["size_x"].append(msg.bbox.size_x)
     bbox_dict["size_y"].append(msg.bbox.size_y)
+    xmin = int(msg.bbox.center.x - (msg.bbox.size_x)/2)
+    ymin = int(msg.bbox.center.y - (msg.bbox.size_y)/2)
+    xmax = int(msg.bbox.center.x + (msg.bbox.size_x)/2)
+    ymax = int(msg.bbox.center.y + (msg.bbox.size_y)/2)
+    bbox_dict["xmin"].append(xmin)
+    bbox_dict["ymin"].append(ymin)
+    bbox_dict["xmax"].append(xmax)
+    bbox_dict["ymax"].append(ymax)
+
 
 def main():
     #set rospack
@@ -92,10 +101,10 @@ def main():
         images_outdir = get_outdir(data_dir, "images")
         csv_outdir = get_outdir(data_dir, "csv_files")
 
-        camera_cols = ["timestamp", "images"]
+        camera_cols = ["timestamp", "filename"]
         camera_dict = defaultdict(list)
 
-        bbox_cols = ["timestamp",  "center_x", "center_y" , "size_x", "size_y"]
+        bbox_cols = ["timestamp",  "center_x", "center_y" , "size_x", "size_y", "xmin" ,  "ymin", "xmax" , "ymax"]
         bbox_dict = defaultdict(list)
 
         bs.write_infos(csv_outdir)
@@ -140,14 +149,21 @@ def main():
         if include_images:
             camera_df = pd.DataFrame(data=camera_dict, columns=camera_cols)
             bbox_df = pd.DataFrame(data=bbox_dict, columns=bbox_cols)
-            data_df = pd.DataFrame(data=None , columns=[ "timestamp", "images", "center_x", "center_y" , "size_x", "size_y" ])
-            data_df["timestamp"] = camera_df["timestamp"]
-            data_df["images"] = camera_df["images"]
-            data_df["center_x"] = bbox_df["center_x"]
-            data_df["center_y"] = bbox_df["center_y"]
-            data_df["size_x"] = bbox_df["size_x"]
-            data_df["size_y"] = bbox_df["size_y"]
-
+            # data_df = pd.DataFrame(data=None , columns=["timestamp", "filename", "width", "height", "class", "center_x", "center_y" , "size_x", "size_y", "xmin", "ymin", "xmax", "ymax" ])
+            data_df = pd.DataFrame(data=None , columns=["filename", "width", "height", "class", "xmin", "ymin", "xmax", "ymax" ])
+            # data_df["timestamp"] = camera_df["timestamp"]
+            data_df["filename"] = camera_df["filename"]
+            data_df["width"] = 512
+            data_df["height"] = 512
+            data_df["class"] = "pedestrian"
+            # data_df["center_x"] = bbox_df["center_x"]
+            # data_df["center_y"] = bbox_df["center_y"]
+            # data_df["size_x"] = bbox_df["size_x"]
+            # data_df["size_y"] = bbox_df["size_y"]
+            data_df["xmin"] = bbox_df["xmin"]
+            data_df["ymin"] = bbox_df["ymin"]
+            data_df["xmax"] = bbox_df["xmax"]
+            data_df["ymax"] = bbox_df["ymax"]
             data_csv_path = os.path.join(csv_outdir, 'data.csv')
             data_df.to_csv(data_csv_path, index=False)
 

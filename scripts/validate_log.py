@@ -8,7 +8,9 @@ from vision_msgs.msg import Detection2DArray
 from std_msgs.msg import Float32
 from std_msgs.msg import Int32
 import sys
+import csv
 
+f = open('test1.csv', 'wt')
 
 class validate:
 
@@ -31,6 +33,8 @@ class validate:
         self.fail_overlap= 0
         self.wrong_detection = 0
         self.no_detection = 0
+        self.writer = csv.writer(f)
+        self.writer.writerow(('timestamp' , 'Area Gazebo', 'Area Detector', 'Area Common', 'Overlap Percentage', 'Correct Percentage' , 'Number of Correct images', 'Total Images'))
     def callback(self,gz_box, dt_box):
         self.total += 1
         # gazebo box max and min corners in 2d
@@ -104,6 +108,7 @@ class validate:
             print("######################### Detection failed ###########################")
         self.overlap_pub.publish(overlap)
         self.object_id_pub.publish(object_id)
+        self.writer.writerow((gz_box.header.stamp.to_nsec(), area_gz, area_dt, area_inter, overlap, float(self.correct/self.total) ,self.correct, self.total ))
         print("correct percentage: %f " %float(self.correct/self.total))
         print(" ### correct: %d #### total: %d " %(self.correct ,self.total))
 
