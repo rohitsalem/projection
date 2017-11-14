@@ -14,8 +14,7 @@ class ShowBoundingBox:
   def __init__(self):
     self.image_pub = rospy.Publisher("/ShowBoundingBox/image_raw",Image,queue_size =1 )
     self.bridge = CvBridge()
-    # self.counter_sub = rospy.Subscriber("/setPose/counter", Int32, counter_callback)
-    self.image_sub = message_filters.Subscriber("/camera/rgb/image_raw",Image)
+    self.image_sub = message_filters.Subscriber("image",Image)
     self.filtered_image_pub = rospy.Publisher("ShowBoundingBox/filtered/image", Image, queue_size =1)
     self.box_sub = message_filters.Subscriber("/bounding_box", Detection2D)
     self.filtered_box_pub = rospy.Publisher("ShowBoundingBox/filtered/bounding_box", Detection2D, queue_size =1)
@@ -44,8 +43,8 @@ class ShowBoundingBox:
     cv_image = cv2.rectangle(cv_image,(minx,miny),(maxx,maxy),(0,0,0),2)
     rospy.Subscriber("/setPose/counter", Int32, self.counter_callback)
     try:
-      if self.count > self.previous_count:
-          self.image_pub.publish(self.bridge.cv2_to_imgmsg(cv_image, "bgr8"))
+        self.image_pub.publish(self.bridge.cv2_to_imgmsg(cv_image, "bgr8"))
+        if self.count > self.previous_count:  # Check to publish filtered image only when the pose is updated
           self.filtered_image_pub.publish(image)
           self.filtered_box_pub.publish(box)
           self.previous_count = self.count

@@ -10,6 +10,7 @@
 #include "ros/ros.h"
 #include "std_msgs/Float64MultiArray.h"
 #include "geometry_msgs/Pose.h"
+#include "std_msgs/Int32.h"
 
 class setPosePerson
 {
@@ -18,6 +19,7 @@ public:
   {
     sub = nh.subscribe("/prius/getPose", 1, &setPosePerson::subscriberCallback, this);
     pub = nh.advertise<geometry_msgs::Pose>("/person_walking/SetObjectPose",1);
+    counter_pub = nh.advertise<std_msgs::Int32>("/setPose/counter",1);
   }
 
   float x_world, y_world, z_world, roll_world, pitch_world, yaw_world ; // world coordinates of the reference frame
@@ -25,6 +27,7 @@ public:
   Vec3f po_w;
   std::vector<double> data;
   geometry_msgs::Pose pose;
+  std_msgs::Int32 count; // counter updates when new pose is set
   void computeTransformationMatrix(float r , float p, float y, Vec3f c)
   {
     Matrix44f Rx(1, 0, 0, 0, 0, cos(r), -sin(r), 0, 0, sin(r), cos(r), 0, 0, 0, 0, 1);
@@ -70,13 +73,13 @@ public:
   }
 
     // Origin of the object with respect to reference frame
-    if (i%100 ==0)
+    if (i%300 ==0)
     {
-     x = setPosePerson::Rand(7.5,15.5);
-     y = setPosePerson::Rand(-2.0,2.0);
-     roll = setPosePerson::Rand(-0.2,0.2);
-     pitch = setPosePerson::Rand(-0.2,0.2);
-     yaw = setPosePerson::Rand(-3.14,3.14);
+     x = setPosePerson::Rand(6.5,8.5);
+     y = setPosePerson::Rand(-1.0,1.0);
+     roll = setPosePerson::Rand(-0.02,0.02);
+     pitch = setPosePerson::Rand(-0.02,0.02);
+     yaw = setPosePerson::Rand(-3.4,3.4);
 
 }
   //  std::cout << i <<" " << x << " " << y << '\n';
@@ -91,6 +94,8 @@ public:
     pose.orientation.y = pitch;
     pose.orientation.z = yaw;
     pub.publish(pose);
+    count.data = count.data+1;
+    counter_pub.publish(count);
 
   i +=1;
 
@@ -99,6 +104,7 @@ private:
   ros::NodeHandle nh;
   ros::Subscriber sub;
   ros::Publisher pub;
+  ros::Publisher counter_pub;
   double x,y,z,roll,pitch,yaw;
   int i =0;
 };
