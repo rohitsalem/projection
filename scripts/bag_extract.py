@@ -25,7 +25,7 @@ def get_outdir(base_dir, name):
         os.makedirs(outdir)
     return outdir
 
-def write_image(bridge, outdir, msg, fmt='JEPG'):
+def write_image(bridge, outdir, msg, fmt='JPEG'):
     results = {}
     # random_name = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(10)])
     # image_filename = os.path.join(outdir, str(random_name) + '.' + fmt)

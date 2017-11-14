@@ -11,7 +11,7 @@ def talker():
     pub = rospy.Publisher(topic_name, Pose, queue_size=1)
     integer_pub = rospy.Publisher ('/setPose/counter', Int32, queue_size =1)
     rospy.init_node('setPose',anonymous = True)
-    rate = rospy.Rate(15)
+    rate = rospy.Rate(10)
     pose = Pose()
     count = Int32()
     while not rospy.is_shutdown():
