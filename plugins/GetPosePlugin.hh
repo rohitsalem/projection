@@ -6,7 +6,7 @@
 #include <gazebo/physics/physics.hh>
 #include <gazebo/common/common.hh>
 #include "ros/ros.h"
-#include <std_msgs/Float64MultiArray.h>
+#include <geometry_msgs/PoseStamped.h>
 
 namespace gazebo
 {
@@ -22,14 +22,10 @@ namespace gazebo
   private: physics::ModelPtr model;
   private: event::ConnectionPtr updateConnection;
 
-
   /// Ros stuff:
   private: ros::NodeHandle nh;
   private: ros::Publisher pose_pub;
-
-  /// Initilializing variables to store pose
-
-  private: std_msgs::Float64MultiArray posedata;
+  private:geometry_msgs::PoseStamped posedata;
 
 };
 }

@@ -8,8 +8,6 @@ GZ_REGISTER_MODEL_PLUGIN(GetPosePlugin);
 GetPosePlugin::GetPosePlugin():ModelPlugin()
 {
 
-
-
 }
 
 //Destructor
@@ -17,13 +15,14 @@ GetPosePlugin::~GetPosePlugin()
 {
 
 }
+
 void GetPosePlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr /*_sdf*/)
 {
   // store the pointer to the model
   this->model = _parent;
   std::string model_name = this->model->GetName();
   std::string topic_name = model_name + "/" + "getPose" ;
-  pose_pub = nh.advertise<std_msgs::Float64MultiArray>(topic_name,1);
+  pose_pub = nh.advertise<geometry_msgs::PoseStamped>(topic_name,1);
   //Listen to the update event
   this->updateConnection = event::Events::ConnectWorldUpdateBegin(
     boost::bind(&GetPosePlugin::Update, this));
@@ -32,19 +31,14 @@ void GetPosePlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr /*_sdf*/)
 
 void GetPosePlugin::Update()
 {
-
   auto pos = model->WorldPose().Pos();
   auto rot = model->WorldPose().Rot();
-  posedata.data.clear(); //clear the contents of the array
-  posedata.data.push_back(pos.X()); // Appending the world pose to the same posedata array
-	posedata.data.push_back(pos.Y());
-	posedata.data.push_back(pos.Z());
-	posedata.data.push_back(rot.Roll());
-	posedata.data.push_back(rot.Pitch());
-	posedata.data.push_back(rot.Yaw());
-
+  posedata.header.stamp = ros::Time::now();
+  posedata.pose.position.x = pos.X();
+  posedata.pose.position.y = pos.Y();
+  posedata.pose.position.z = pos.Z();
+  posedata.pose.orientation.x = rot.Roll();
+  posedata.pose.orientation.y = rot.Pitch();
+  posedata.pose.orientation.z = rot.Yaw();
   pose_pub.publish(posedata);
-
-
-
 }
