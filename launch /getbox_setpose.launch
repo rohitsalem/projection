@@ -6,7 +6,6 @@
     <arg name = "gui" value = "true"/>
     <arg name = "world_name" value = "$(find projection)/worlds/camera_person.world"/>
   </include>
-  <node name = "perspectiveProjectionNode" pkg = "projection" type ="perspectiveProjectionNode" output ="screen"/>
   <node name = "showBoundingBox" type = "showBoundingBox.py" pkg = "projection" output = "screen">
     <remap from='image' to='/camera/rgb/image_raw'/>
   </node>

@@ -8,10 +8,7 @@
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="verbose" value="true"/>
     <!-- <arg name="paused" value="true"/> -->
-    <!-- <arg name="world_name" value="$(find projection)/worlds/raceway.world"/> -->
-
     <arg name="world_name" value="$(find projection)/worlds/mcity.world"/>
-
   </include>
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" >
@@ -32,18 +29,20 @@
     <param name="dev" value="/dev/input/js0"/>
   </node>
 
-
-  <!-- <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -x 94.38 -y -309.710 -z 7.5 -R 0 -P 0 -Y 1.579425 -model prius"/> -->
-
   <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -x -189.104  -y -341.7725 -z 0.03 -R 0 -P 0 -Y 1.57 -model prius"/>
+
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
 
   <node pkg = "projection" name="perspectiveProjectionNode" type = "perspectiveProjectionNode"/>
+
   <node pkg = "projection" name="showBoundingBox" type ="showBoundingBox.py">
     <remap from = 'image' to ='/prius/front_camera/image_raw'/>
   </node>
+
   <node pkg = "projection" name="setPosePersonNode" type ="setPosePersonNode"/>
+
   <node pkg= "tensorflow_object_detector" name="detect_ros" type="detect_ros.py"  output="screen">
     <remap from='image' to='/prius/front_camera/image_raw'/>
 	</node>
+
 </launch>
