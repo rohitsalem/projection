@@ -33,15 +33,16 @@
   <!-- Examples: -->
   <!-- Use build_depend for packages you need at compile time: -->
   <!-- Use buildtool_depend for build tool packages: -->
-  <!-- <build_depend>message_generation</build_depend> -->
+  <build_depend>message_generation</build_depend>
   <!--   <buildtool_depend>catkin</buildtool_depend> -->
   <!-- Use run_depend for packages you need at runtime: -->
-  <!-- <run_depend>message_runtime</run_depend> -->
+  <run_depend>message_runtime</run_depend>
   <!-- Use test_depend for packages you need only for testing: -->
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>gazebo_ros</build_depend>
   <build_depend>gazebo_plugins</build_depend>
+  <build_depend>std_msgs</build_depend>
 
   <build_depend>cv_bridge</build_depend>
   <build_depend>opencv2</build_depend>
@@ -54,7 +55,7 @@
   <run_depend>cv_bridge</run_depend>
   <run_depend>opencv2</run_depend>
   <run_depend>message_filters</run_depend>
-
+  <run_depend>std_msgs</run_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
