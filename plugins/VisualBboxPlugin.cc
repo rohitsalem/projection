@@ -59,7 +59,7 @@ VisualBboxPlugin::VisualBboxPlugin() : dataPtr(new VisualBboxPluginPrivate)
 	char *argv = nullptr;
 	ros::init(argc, &argv, "VisualBboxPlugin");
 	this->dataPtr->nh = new ros::NodeHandle();
-	this->dataPtr->pub = this->dataPtr->nh->advertise<std_msgs::Float64MultiArray>("objectBoxWorldCoordinates",1);
+	this->dataPtr->pub = this->dataPtr->nh->advertise<projection::Float64MultiArrayStamped>("objectBoxWorldCoordinates",1);
 
 }
 
@@ -176,31 +176,33 @@ void VisualBboxPlugin::Update()
 	RT.Matrix44f::multVecMatrix(pH_o,pWorldH);
 
 	// Transfer into data msg to publish
-	worldArr.data.clear();
-	worldArr.data.push_back(pWorldA[0]);
-	worldArr.data.push_back(pWorldA[1]);
-	worldArr.data.push_back(pWorldA[2]);
-	worldArr.data.push_back(pWorldB[0]);
-	worldArr.data.push_back(pWorldB[1]);
-	worldArr.data.push_back(pWorldB[2]);
-	worldArr.data.push_back(pWorldC[0]);
-	worldArr.data.push_back(pWorldC[1]);
-	worldArr.data.push_back(pWorldC[2]);
-	worldArr.data.push_back(pWorldD[0]);
-	worldArr.data.push_back(pWorldD[1]);
-	worldArr.data.push_back(pWorldD[2]);
-	worldArr.data.push_back(pWorldE[0]);
-	worldArr.data.push_back(pWorldE[1]);
-	worldArr.data.push_back(pWorldE[2]);
-	worldArr.data.push_back(pWorldF[0]);
-	worldArr.data.push_back(pWorldF[1]);
-	worldArr.data.push_back(pWorldF[2]);
-	worldArr.data.push_back(pWorldG[0]);
-	worldArr.data.push_back(pWorldG[1]);
-	worldArr.data.push_back(pWorldG[2]);
-	worldArr.data.push_back(pWorldH[0]);
-	worldArr.data.push_back(pWorldH[1]);
-	worldArr.data.push_back(pWorldH[2]);
+	worldArr.array.data.clear();
+	worldArr.array.data.push_back(pWorldA[0]);
+	worldArr.array.data.push_back(pWorldA[1]);
+	worldArr.array.data.push_back(pWorldA[2]);
+	worldArr.array.data.push_back(pWorldB[0]);
+	worldArr.array.data.push_back(pWorldB[1]);
+	worldArr.array.data.push_back(pWorldB[2]);
+	worldArr.array.data.push_back(pWorldC[0]);
+	worldArr.array.data.push_back(pWorldC[1]);
+	worldArr.array.data.push_back(pWorldC[2]);
+	worldArr.array.data.push_back(pWorldD[0]);
+	worldArr.array.data.push_back(pWorldD[1]);
+	worldArr.array.data.push_back(pWorldD[2]);
+	worldArr.array.data.push_back(pWorldE[0]);
+	worldArr.array.data.push_back(pWorldE[1]);
+	worldArr.array.data.push_back(pWorldE[2]);
+	worldArr.array.data.push_back(pWorldF[0]);
+	worldArr.array.data.push_back(pWorldF[1]);
+	worldArr.array.data.push_back(pWorldF[2]);
+	worldArr.array.data.push_back(pWorldG[0]);
+	worldArr.array.data.push_back(pWorldG[1]);
+	worldArr.array.data.push_back(pWorldG[2]);
+	worldArr.array.data.push_back(pWorldH[0]);
+	worldArr.array.data.push_back(pWorldH[1]);
+	worldArr.array.data.push_back(pWorldH[2]);
+	worldArr.header.stamp = ros::Time::now();
+	worldArr.header.seq++;
 	//Publish message
 	this->dataPtr->pub.publish(worldArr);
 }

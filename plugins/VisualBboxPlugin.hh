@@ -4,9 +4,9 @@
 #include <gazebo/common/Plugin.hh>
 #include <memory>
 #include <ros/ros.h>
-#include <std_msgs/Float64MultiArray.h>
+// #include <std_msgs/Float64MultiArray.h>
 #include "geometry.h"
-
+#include <projection/Float64MultiArrayStamped.h>
 namespace gazebo
 {
 
@@ -38,7 +38,9 @@ namespace gazebo
 
 	private: Vec3f pWorldA, pWorldB, pWorldC, pWorldD, pWorldE, pWorldF, pWorldG, pWorldH;
 	private: float x_world, y_world, z_world, roll_world, pitch_world, yaw_world ;
-	private: std_msgs::Float64MultiArray worldArr;
+	// private: std_msgs::Float64MultiArray worldArr;
+	private: projection::Float64MultiArrayStamped worldArr;
+
 	private: Matrix44f RT;
 	private: void computeTransformationMatrix(float r , float p, float y, Vec3f c);
 
