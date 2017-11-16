@@ -5,30 +5,27 @@ import csv
 import rospy
 import random
 import numpy as np
+import pandas as pd
 from geometry_msgs.msg import Pose
 
-csv_path = os.path.join(os.path.dirname(sys.path[0]),'data')
-csv_file = os.path.join(csv_path, 'waypoints.csv')
-with open(csv_file, 'rb') as f:
-    reader = csv.reader(f)
-    x = []
-    y = []
-    z = []
-    roll = []
-    pitch = []
-    yaw = []
-    for row in reader:
-        x.append(float(row[0]))
-        y.append(float(row[1]))
-        z.append(float(row[2]))
-        roll.append(float(row[3]))
-        pitch.append(float(row[4]))
-        yaw.append(float(row[5]))
+csv_path = os.path.join(os.path.dirname(sys.path[0]),"data", "csv_files", "data_waypoints.csv")
+
+def get_csv_data(file):
+    data = pd.read_csv(file)
+    x, y, z, roll, pitch, yaw = [],[],[],[],[],[]
+    x = list(data['x'])
+    y = list(data['y'])
+    z = list(data['z'])
+    roll = list(data['roll'])
+    pitch = list(data['pitch'])
+    yaw = list(data['yaw'])
+    return x, y, z, roll, pitch, yaw
 
 def talker(i):
     pub = rospy.Publisher("prius/SetObjectPose", Pose, queue_size=1)
     rospy.init_node('setPose',anonymous = True)
     rate = rospy.Rate(1000)
+    x, y, z, roll, pitch, yaw = get_csv_data(csv_path)
     pose = Pose()
     if(not rospy.is_shutdown()):
         while(i < (len(x))):
@@ -41,6 +38,7 @@ def talker(i):
             pub.publish(pose)
             i = i+1
             rate.sleep()
+
 if __name__ == '__main__':
     try:
         talker(i=0)
