@@ -59,7 +59,7 @@ VisualBboxPlugin::VisualBboxPlugin() : dataPtr(new VisualBboxPluginPrivate)
 	char *argv = nullptr;
 	ros::init(argc, &argv, "VisualBboxPlugin");
 	this->dataPtr->nh = new ros::NodeHandle();
-	this->dataPtr->pub = this->dataPtr->nh->advertise<std_msgs::Float64MultiArray>("corners",1);
+	this->dataPtr->pub = this->dataPtr->nh->advertise<projection::Float64MultiArrayStamped>("objectBoxWorldCoordinates",1);
 
 }
 
@@ -100,6 +100,22 @@ void VisualBboxPlugin::Load (rendering::VisualPtr _visual, sdf::ElementPtr _sdf)
 	}
 }
 
+void VisualBboxPlugin::computeTransformationMatrix(float r , float p, float y, Vec3f c)
+{
+	Matrix44f Rx(1, 0, 0, 0, 0, cos(r), -sin(-r), 0, 0, sin(-r), cos(r), 0, 0, 0, 0, 1);
+	Matrix44f Ry(cos(p), 0, sin(-p), 0, 0, 1, 0, 0, -sin(-p), 0, cos(p), 0, 0, 0, 0, 1);
+	Matrix44f Rz(cos(y), -sin(-y), 0, 0, sin(-y), cos(y), 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+	Matrix44f T(1,0,0,0,0,1,0,0,0,0,1,0,c[0],c[1],c[2],1);
+
+	Matrix44f Rxy;
+	Matrix44f Rxyz;
+
+	Matrix44f::multiply(Rx,Ry,Rxy); // Saves Rx*Ry in Rxy
+	Matrix44f::multiply(Rxy, Rz, Rxyz); // Saves Rxy*Rz in Rxyz
+	Matrix44f::multiply( Rxyz, T, RT); // Saves Rxyz*T in RT
+
+}
+
 void VisualBboxPlugin::Update()
 {
 	if(!this->dataPtr->visual)
@@ -126,24 +142,69 @@ void VisualBboxPlugin::Update()
 	y_max = max_vec[1];
 	z_max = max_vec[2];
 
+	// Vertices of cuboid with respect to the object's origin.
+	Vec3f pA_o(x_min, y_min, z_min);
+	Vec3f pB_o(-x_min, y_min, z_min);
+	Vec3f pC_o(-x_min, -y_min, z_min);
+	Vec3f pD_o(x_min, -y_min, z_min);
+	Vec3f pE_o(x_max, y_max, z_max);
+	Vec3f pF_o(-x_max, y_max, z_max);
+	Vec3f pG_o(-x_max, -y_max, z_max);
+	Vec3f pH_o(x_max, -y_max, z_max);
 	auto pos = this->dataPtr->visual->WorldPose().Pos();
 	auto rot = this->dataPtr->visual->WorldPose().Rot();
-	corners.data.clear(); // clear the contents of the array if any
-	corners.data.push_back(x_min); // append the corners to the corners array
-	corners.data.push_back(y_min);
-	corners.data.push_back(z_min);
-	corners.data.push_back(x_max);
-	corners.data.push_back(y_max);
-	corners.data.push_back(z_max);
-	corners.data.push_back(pos.X()); // Appending the world pose to the same corners array
-	corners.data.push_back(pos.Y());
-	corners.data.push_back(pos.Z());
-	corners.data.push_back(rot.Roll());
-	corners.data.push_back(rot.Pitch());
-	corners.data.push_back(rot.Yaw());
-  
-  this->dataPtr->pub.publish(corners);
 
+	x_world = pos.X();
+	y_world = pos.Y();
+	z_world = pos.Z();
+	roll_world = rot.Roll();
+	pitch_world = rot.Pitch();
+	yaw_world = rot.Yaw();
+
+	// Object's world coordiantes along with roll pitch and yaw :
+	Vec3f pO_w (x_world, y_world, z_world);
+	VisualBboxPlugin::computeTransformationMatrix(roll_world, pitch_world, yaw_world, pO_w);
+
+	// compute the world coordinates of the corners of the box
+	RT.Matrix44f::multVecMatrix(pA_o,pWorldA);
+	RT.Matrix44f::multVecMatrix(pB_o,pWorldB);
+	RT.Matrix44f::multVecMatrix(pC_o,pWorldC);
+	RT.Matrix44f::multVecMatrix(pD_o,pWorldD);
+	RT.Matrix44f::multVecMatrix(pE_o,pWorldE);
+	RT.Matrix44f::multVecMatrix(pF_o,pWorldF);
+	RT.Matrix44f::multVecMatrix(pG_o,pWorldG);
+	RT.Matrix44f::multVecMatrix(pH_o,pWorldH);
+
+	// Transfer into data msg to publish
+	worldArr.array.data.clear();
+	worldArr.array.data.push_back(pWorldA[0]);
+	worldArr.array.data.push_back(pWorldA[1]);
+	worldArr.array.data.push_back(pWorldA[2]);
+	worldArr.array.data.push_back(pWorldB[0]);
+	worldArr.array.data.push_back(pWorldB[1]);
+	worldArr.array.data.push_back(pWorldB[2]);
+	worldArr.array.data.push_back(pWorldC[0]);
+	worldArr.array.data.push_back(pWorldC[1]);
+	worldArr.array.data.push_back(pWorldC[2]);
+	worldArr.array.data.push_back(pWorldD[0]);
+	worldArr.array.data.push_back(pWorldD[1]);
+	worldArr.array.data.push_back(pWorldD[2]);
+	worldArr.array.data.push_back(pWorldE[0]);
+	worldArr.array.data.push_back(pWorldE[1]);
+	worldArr.array.data.push_back(pWorldE[2]);
+	worldArr.array.data.push_back(pWorldF[0]);
+	worldArr.array.data.push_back(pWorldF[1]);
+	worldArr.array.data.push_back(pWorldF[2]);
+	worldArr.array.data.push_back(pWorldG[0]);
+	worldArr.array.data.push_back(pWorldG[1]);
+	worldArr.array.data.push_back(pWorldG[2]);
+	worldArr.array.data.push_back(pWorldH[0]);
+	worldArr.array.data.push_back(pWorldH[1]);
+	worldArr.array.data.push_back(pWorldH[2]);
+	worldArr.header.stamp = ros::Time::now();
+	worldArr.header.seq++;
+	//Publish message
+	this->dataPtr->pub.publish(worldArr);
 }
 
 

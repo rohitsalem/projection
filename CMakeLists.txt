@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   vision_msgs
   gazebo_plugins
+  message_generation
 )
 
 find_package(gazebo REQUIRED)
@@ -53,11 +54,10 @@ find_package(gazebo REQUIRED)
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+ add_message_files(
+   FILES
+   Float64MultiArrayStamped.msg
+ )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -73,10 +73,10 @@ find_package(gazebo REQUIRED)
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+generate_messages(
+   DEPENDENCIES
+   std_msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -109,9 +109,9 @@ find_package(gazebo REQUIRED)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-   LIBRARIES 
+   LIBRARIES
    gazebo_ros_camera_utils
-   CATKIN_DEPENDS gazebo_ros gazebo_plugins
+   CATKIN_DEPENDS gazebo_ros gazebo_plugins message_runtime
 
 #  DEPENDS system_lib
 )
@@ -141,9 +141,6 @@ target_link_libraries( SetPosePlugin ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES})
 
 add_library(GetPosePlugin SHARED plugins/GetPosePlugin.cc)
 target_link_libraries( GetPosePlugin ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES})
-
-add_executable(perspectiveProjectionNode src/perspectiveProjection.cpp)
-target_link_libraries(perspectiveProjectionNode ${catkin_LIBRARIES})
 
 add_executable(setPosePersonNode src/setPosePerson.cpp)
 target_link_libraries(setPosePersonNode ${catkin_LIBRARIES})
@@ -194,11 +191,11 @@ catkin_install_python(PROGRAMS scripts/validate.py DESTINATION ${CATKIN_PACKAGE_
 # )
 
 ## Mark executables and/or libraries for installation
- install(TARGETS 
+ install(TARGETS
 	CameraBboxPlugin
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-   
+
  )
 
 ## Mark cpp header files for installation

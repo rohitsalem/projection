@@ -8,7 +8,7 @@
 #include <cmath>
 #include "geometry.h"
 #include "ros/ros.h"
-#include "std_msgs/Float64MultiArray.h"
+#include "geometry_msgs/PoseStamped.h"
 #include "geometry_msgs/Pose.h"
 #include "std_msgs/Int32.h"
 
@@ -25,7 +25,6 @@ public:
   float x_world, y_world, z_world, roll_world, pitch_world, yaw_world ; // world coordinates of the reference frame
   Matrix44f RT;
   Vec3f po_w;
-  std::vector<double> data;
   geometry_msgs::Pose pose;
   std_msgs::Int32 count; // counter updates when new pose is set
   void computeTransformationMatrix(float r , float p, float y, Vec3f c)
@@ -51,15 +50,15 @@ public:
     return fMin + f * (fMax - fMin);
   }
 
-  void subscriberCallback(const std_msgs::Float64MultiArray::ConstPtr& msg)
+  void subscriberCallback(const geometry_msgs::PoseStamped::ConstPtr& msg)
   {
-    data = msg->data;
-    x_world = data[0]; // World coordinates of the reference frame
-    y_world = data[1];
-    z_world = data[2];
-    roll_world = data[3];
-    pitch_world = data[4];
-    yaw_world = data[5];
+
+    x_world = msg->pose.position.x; // World coordinates of the reference frame
+    y_world = msg->pose.position.y;
+    z_world = msg->pose.position.z;
+    roll_world = msg->pose.orientation.x;
+    pitch_world = msg->pose.orientation.y;
+    yaw_world = msg->pose.orientation.z;
 
     // reference frame's world coordiantes along with roll putch and yaw :
     Vec3f pr_w (x_world, y_world, z_world);

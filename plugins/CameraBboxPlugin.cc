@@ -151,22 +151,28 @@ void CameraBboxPlugin::OnNewFrame(const unsigned char *_image,
     auto miny = *std::min_element(datay.begin(),datay.end());  //min y
     auto maxy = *std::max_element(datay.begin(),datay.end());  //max y
 
-    box.header.stamp.sec = sensor_update_time.sec;
-    box.header.stamp.nsec = sensor_update_time.nsec;
+    box.header.stamp.sec = sec ;
+    box.header.stamp.nsec = nsec;
     box.bbox.center.x = int((minx + maxx)/2);
     box.bbox.center.y = int((miny + maxy)/2);
     box.bbox.size_x = maxx - minx;
     box.bbox.size_y = maxy - miny;
 
+    if (sec == sensor_update_time.sec && nsec == sensor_update_time.nsec)
+    {
     this->pub.publish(box);
+    }
     this->dirty = false;
   }
 }
 
-void CameraBboxPlugin::Callback(const std_msgs::Float64MultiArray::ConstPtr& msg)
+void CameraBboxPlugin::Callback(const projection::Float64MultiArrayStamped::ConstPtr& msg)
 {
   std::lock_guard<std::mutex> lock(this->mutex);
-  d = msg->data;
+  d = msg->array.data;
+  sec= msg->header.stamp.sec;
+  nsec= msg->header.stamp.nsec;
+
   this->dirty = true; // FLag to enable mutex
 
 }
