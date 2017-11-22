@@ -46,6 +46,7 @@ class validate:
         area_gz = float((maxx_gz-minx_gz)*(maxy_gz-miny_gz))
         area_inter = 0
         area_dt = 0
+        iou=0
         # detector stuff taking only single result
         if len(dt_box.detections) !=0 :
             c=0 # flag to check the detection of person
@@ -69,16 +70,13 @@ class validate:
                         maxy_dt = int(center_y_detector + size_y_detector/2)
                         area_inter = float(max(0,(min(maxx_gz,maxx_dt)-max(minx_gz,minx_dt)))*max(0,(min(maxy_gz,maxy_dt)-max(miny_gz,miny_dt))))
                         area_dt = float(size_y_detector*size_x_detector)
-
                         overlap = float(area_inter/area_gz)
+                        # Intersection Over Union:
+                        iou= area_inter/float(area_gz + area_dt - area_inter)
                         print(minx_gz , miny_gz)
-                        # print(miny_gz)
                         print(minx_dt , miny_dt)
-                        # print(miny_dt)
                         print(maxx_gz , maxy_gz)
-                        # print(maxy_gz)
                         print(maxx_dt , maxy_dt)
-                        # print(maxy_dt)
                         print("Common area:")
                         print(area_inter)
                         print("Area Gazebo:")
@@ -87,7 +85,9 @@ class validate:
                         print(area_dt)
                         print("overlap:")
                         print(overlap)
-                        if(overlap < 0.4):
+                        print("IOU (Intersection Over Union):")
+                        print(iou)
+                        if(iou < 0.5):
                             print("################# Failed overlap ###############")
                             self.fail_overlap += 1
                         else:
