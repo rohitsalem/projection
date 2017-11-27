@@ -135,7 +135,7 @@ class BagSet(object):
                 self._extend_range(info_start, info_end)
             else:
                 print('Orphaned bag info time range, are there multiple datasets in same folder?')
-                continue
+                # continue
             self.infos.append(info)
             if self._remap_camera:
                 filter_topics = self._filter_topics_remap(filter_topics)

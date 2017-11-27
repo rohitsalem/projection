@@ -76,7 +76,7 @@ def main():
     #get package
     bag_dir = os.path.join(rospack.get_path('projection'), "bag_files")
     data_dir = os.path.join(rospack.get_path('projection'), "datasets")
-    rosbag_file = os.path.join(bag_dir,  "dataset.bag")
+    rosbag_file = os.path.join(bag_dir)
 
     bridge = CvBridge()
 

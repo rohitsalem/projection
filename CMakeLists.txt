@@ -142,6 +142,9 @@ target_link_libraries( SetPosePlugin ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES})
 add_library(GetPosePlugin SHARED plugins/GetPosePlugin.cc)
 target_link_libraries( GetPosePlugin ${GAZEBO_LIBRARIES} ${catkin_LIBRARIES})
 
+#add_executable(perspectiveProjectionNode src/perspectiveProjection.cpp)
+#target_link_libraries(perspectiveProjectionNode ${catkin_LIBRARIES})
+
 add_executable(setPosePersonNode src/setPosePerson.cpp)
 target_link_libraries(setPosePersonNode ${catkin_LIBRARIES})
 
