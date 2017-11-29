@@ -37,7 +37,9 @@
     <remap from = 'image' to ='/prius/front_camera/image_raw'/>
   </node>
 
-  <!-- <node pkg = "projection" name="setPose_prius" type ="setPose_prius.py"/> -->
+  <node pkg = "projection" name="setPose_prius" type ="setPose_prius.py">
+    <param name="waypoints_file" value="waypoints_citysim.csv"/>
+  </node>
 
   <node pkg = "projection" name="setPosePersonNode" type ="setPosePersonNode"/>
 </launch>
