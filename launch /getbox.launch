@@ -8,6 +8,7 @@
   </include>
   <node name = "showBoundingBox" type = "showBoundingBox.py" pkg = "projection" output = "screen">
     <remap from='image' to='/camera/rgb/image_raw'/>
+    <param name="use_approx_ts" value="False"/>
   </node>
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
 </launch>

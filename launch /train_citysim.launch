@@ -21,13 +21,14 @@
   <node pkg="tf2_ros" type="static_transform_publisher" name="very_inaccurate_odom" args="0 0 0 0 0 0 odom base_link"/>
   <node pkg="car_demo" type="joystick_translator" name="joystick_translator"/>
 
+  <!-- Uncomment the following two nodes and comment the setPose_prius node to use joystick -->
   <!-- Run two joy nodes publishing to the same topic, just to cover two possible joystick locations -->
   <!-- <node pkg="joy" type="joy_node" name="joy_node1">
     <param name="dev" value="/dev/input/js1"/>
   </node> -->
-  <node pkg="joy" type="joy_node" name="joy_node2">
+  <!-- <node pkg="joy" type="joy_node" name="joy_node2">
     <param name="dev" value="/dev/input/js0"/>
-  </node>
+  </node> -->
 
   <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -x -39.987 -y -1.88 -z 5.050971 -R 0 -P 0 -Y 0 -model prius"/>
 
@@ -35,6 +36,7 @@
 
   <node pkg = "projection" name="showBoundingBox" type ="showBoundingBox.py">
     <remap from = 'image' to ='/prius/front_camera/image_raw'/>
+    <param name="use_approx_ts" value="True"/>
   </node>
 
   <node pkg = "projection" name="setPose_prius" type ="setPose_prius.py">

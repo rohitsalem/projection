@@ -18,7 +18,11 @@ class ShowBoundingBox:
     self.filtered_image_pub = rospy.Publisher("ShowBoundingBox/filtered/image", Image, queue_size =1)
     self.box_sub = message_filters.Subscriber("/bounding_box", Detection2D)
     self.filtered_box_pub = rospy.Publisher("ShowBoundingBox/filtered/bounding_box", Detection2D, queue_size =1)
-    self.ts = message_filters.TimeSynchronizer([self.image_sub,self.box_sub], 10)
+    self.flag_approx = rospy.get_param('showBoundingBox/use_approx_ts')
+    if self.flag_approx == True: # Using ApproximateTimeSynchronizer for slower gazebo worlds with small RTF
+        self.ts = message_filters.ApproximateTimeSynchronizer([self.image_sub,self.box_sub], 10, 0.01)
+    else:
+        self.ts = message_filters.TimeSynchronizer([self.image_sub,self.box_sub], 10)
     self.ts.registerCallback(self.callback)
     self.count = 0
     self.previous_count = 0
