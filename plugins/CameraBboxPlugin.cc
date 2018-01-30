@@ -158,10 +158,18 @@ void CameraBboxPlugin::OnNewFrame(const unsigned char *_image,
     box.bbox.size_x = maxx - minx;
     box.bbox.size_y = maxy - miny;
 
-    if (sec == sensor_update_time.sec && nsec == sensor_update_time.nsec)
-    {
+    //double secs = ros::Time::now().toSec();
+    // double nsecs = ros::Time::now().toNsec();
+    // std::cout << "Difference Secs: " <<  secs-sensor_update_time.sec << '\n';
+    // std::cout << "Difference nSecs: " <<  nsecs-sensor_update_time.nsec << '\n';
+    // std::cout << "Difference bbox secs" << sec-sensor_update_time.sec << '\n';
+    // std::cout << "Difference bbox nsecs" << nsec-sensor_update_time.nsec << '\n';
+
+    // if (sec == sensor_update_time.sec && nsec == sensor_update_time.nsec)
+    // {
+      // std::cout << "publishing box" << '\n';
     this->pub.publish(box);
-    }
+    // }
     this->dirty = false;
   }
 }
