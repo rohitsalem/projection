@@ -9,16 +9,18 @@ from std_msgs.msg import Float32
 from std_msgs.msg import Int32
 import sys
 import csv
-
+import os
+import rospkg
 
 class validate:
 
     def __init__(self):
-        # print("init_node")
-
+        rospack = rospkg.RosPack()
+        csv_path = os.path.join(rospack.get_path('projection'),'validation_output')
+        print(csv_path)
         try:
             self.csv_file = sys.argv[1]
-            self.f = open(self.csv_file, 'wt')
+            self.f = open(os.path.join(csv_path,self.csv_file), 'wt')
         except:
             print("Usage: python validate_log.py name_of_the_csv_file.csv")
             exit()
