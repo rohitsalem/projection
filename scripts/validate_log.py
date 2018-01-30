@@ -10,31 +10,41 @@ from std_msgs.msg import Int32
 import sys
 import csv
 
-f = open('gray_bkg_pretrained.csv', 'wt')
 
 class validate:
 
     def __init__(self):
-        print("init_node")
+        # print("init_node")
 
+        try:
+            self.csv_file = sys.argv[1]
+            self.f = open(self.csv_file, 'wt')
+        except:
+            print("Usage: python validate_log.py name_of_the_csv_file.csv")
+            exit()
+
+        print("the arguments are:", str(sys.argv))
         # subscriber to subcribe bounding_box coordinates values of the 2d bbox from the gazebo plugin
         self.bbox_gazbeo_sub = message_filters.Subscriber("/ShowBoundingBox/filtered/bounding_box", Detection2D)
-
         # subscriber to subcribe bounding_box coordinates values of the 2d bbox from the object detector
         self.bbox_detector_sub = message_filters.Subscriber("/objects", Detection2DArray)
 
         self.overlap_pub = rospy.Publisher("/validate/overlap_area", Float32, queue_size = 1)
         self.object_id_pub = rospy.Publisher("/validate/object_id", Int32, queue_size = 1)
-        self.ts = message_filters.TimeSynchronizer([ self.bbox_gazbeo_sub, self.bbox_detector_sub],200)
-
+        self.flag_approx = rospy.get_param("/showBoundingBox/use_approx_ts")
+        if self.flag_approx == True: # Using ApproximateTimeSynchronizer for slower gazebo worlds with small RTF
+            self.ts = message_filters.ApproximateTimeSynchronizer([ self.bbox_gazbeo_sub, self.bbox_detector_sub],200,0.01)
+        else:
+            self.ts = message_filters.TimeSynchronizer([ self.bbox_gazbeo_sub, self.bbox_detector_sub],200)
         self.ts.registerCallback(self.callback)
         self.total = 0.0
         self.correct = 0.0
         self.fail_overlap= 0
         self.wrong_detection = 0
         self.no_detection = 0
-        self.writer = csv.writer(f)
+        self.writer = csv.writer(self.f)
         self.writer.writerow(('timestamp' , 'Area Gazebo', 'Area Detector', 'Area Common',  'IOU', 'Correct Percentage' , 'Number of Correct images', 'Total Images'))
+
     def callback(self,gz_box, dt_box):
         self.total += 1
         # gazebo box max and min corners in 2d
