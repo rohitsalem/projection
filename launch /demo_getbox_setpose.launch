@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="rvizconfig" default="$(find projection)/rviz/car_demo.rviz" />
+  <include file = "$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name = "verbose" value = "true"/>
+    <arg name = "gui" value = "true"/>
+    <arg name = "world_name" value = "$(find projection)/worlds/camera_person.world"/>
+  </include>
+  <node name = "showBoundingBox" type = "showBoundingBox.py" pkg = "projection" output = "screen">
+    <remap from='image' to='/camera/rgb/image_raw'/>
+    <param name="use_approx_ts" value="True"/>
+  </node>
+  <node name = "setPose" type = "setPose.py" pkg = "projection" output = "screen"/>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+  <node pkg= "tensorflow_object_detector" name="detect_ros" type="detect_ros.py"  output="screen">
+    <remap from='image' to='/camera/rgb/image_raw'/>
+	</node>
+
+</launch>
