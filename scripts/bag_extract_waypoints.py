@@ -35,12 +35,13 @@ def pose2dict(msg, pose_dict):
     pose_dict["yaw"].append(msg.pose.orientation.z)
 
 def main():
+    file_name = sys.argv[1] # to store the name of the csv file with waypoints data
     #set rospack
     rospack = rospkg.RosPack()
     #get package
-    bag_dir = os.path.join(rospack.get_path('projection'), 'data', "bag_files")
-    data_dir = os.path.join(rospack.get_path('projection'), "data")
-    rosbag_file = os.path.join(bag_dir,  "dataset.bag")
+    bag_dir = os.path.join(rospack.get_path('projection'), 'waypoints_data', 'bag_files')
+    data_dir = os.path.join(rospack.get_path('projection'), 'waypoints_data', 'waypoints')
+    rosbag_file = os.path.join(bag_dir,  'dataset.bag')
 
     bridge = CvBridge()
 
@@ -57,11 +58,11 @@ def main():
         sys.stdout.flush()
 
         dataset_outdir = os.path.join(data_dir, "%s" % bs.name)
-        csv_outdir = get_outdir(data_dir, 'csv_files')
+        # csv_outdir = get_outdir(data_dir, 'csv_files')
         pose_cols = ["timestamp", "x", "y", "z", "roll", "pitch", "yaw"]
         pose_dict = defaultdict(list)
 
-        bs.write_infos(csv_outdir)
+        # bs.write_infos(csv_outdir)
         readers = bs.get_readers()
         stats_acc = defaultdict(int)
 
@@ -87,7 +88,7 @@ def main():
         sys.stdout.flush()
 
         pose_df = pd.DataFrame(data=pose_dict, columns=pose_cols)
-        data_csv_path = os.path.join(csv_outdir, 'data_waypoints.csv')
+        data_csv_path = os.path.join(data_dir, file_name)
         pose_df.to_csv(data_csv_path, index=False)
 
 if __name__ == '__main__':

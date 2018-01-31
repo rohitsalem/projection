@@ -9,7 +9,7 @@ import pandas as pd
 from geometry_msgs.msg import Pose
 
 file_name = rospy.get_param('setPose_prius/waypoints_file')
-csv_path = os.path.join(os.path.dirname(sys.path[0]) ,"data", file_name)
+csv_path = os.path.join(os.path.dirname(sys.path[0]), 'waypoints_data', 'waypoints',  file_name)
 
 def get_csv_data(file):
     data = pd.read_csv(file)
